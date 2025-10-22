@@ -27,6 +27,12 @@ bool existe(ident id,colecInterdep<ident,val> ci);
 template<typename ident,typename val>
 bool existeDependiente(ident id,colecInterdep<ident,val> ci);
 
+template<typename ident,typename val>
+bool existeIndependiente(ident id,colecInterdep<ident,val> ci);
+
+template<typename ident,typename val>
+void anyadirIndependiente(colecInterdep<ident,val> ci, ident id, val v);
+
 // FIN predeclaracion del TAD GENERICO colecInterdep (Fin INTERFAZ)
 
 
@@ -41,6 +47,8 @@ struct colecInterdep{
     friend bool esVacia<ident,val>(colecInterdep<ident,val> ci);
     friend bool existe<ident,val>(ident id,colecInterdep<ident,val> ci);
     friend bool existeDependiente<ident,val>(ident id,colecInterdep<ident,val> ci);
+    friend bool existeIndependiente<ident,val>(ident id,colecInterdep<ident,val> ci);
+    friend void anyadirIndependiente<ident,val>(colecInterdep<ident,val> ci, ident id, val v);
 
   private: //declaracion de la representacion interna del tipo
     struct Nodo {
@@ -108,11 +116,42 @@ bool existe(ident id,colecInterdep<ident,val> ci) {
 
 template<typename ident,typename val>
 bool existeDependiente(ident id,colecInterdep<ident,val> ci) {
-    typename colecInterdep<ident,val>::Nodo *nAux = ci.inicio;
-    while (nAux != nullptr && nAux->NodoDep->id != id) {
+    typename colecInterdep<ident,val>::Nodo *nAux = ci.inicio; //puntero para recorrer la colección
+    while (nAux != nullptr && nAux->id < id) {
         nAux = nAux->siguiente;
     }
-    return (nAux != nullptr && nAux->NodoDep->id == id);
+    return (nAux != nullptr && nAux->id == id && nAux->NodoDep->id != nullptr );
+}
+
+template<typename ident,typename val>
+bool existeIndependiente(ident id,colecInterdep<ident,val> ci) {
+    typename colecInterdep<ident,val>::Nodo *nAux = ci.inicio; //puntero para recorrer la colección
+    while (nAux != nullptr && nAux->id < id) {
+        nAux = nAux->siguiente;
+    }
+    return (nAux != nullptr && nAux->id == id && nAux->NodoDep->id == nullptr );
+}
+
+template<typename ident,typename val>
+void anyadirIndependiente(colecInterdep<ident,val> ci, ident id, val v) {
+    typename colecInterdep<ident,val>::Nodo *nAux = ci.inicio; //puntero para recorrer la colección
+    typename colecInterdep<ident,val>::Nodo *nAnterior;
+    while (nAux != nullptr && nAux->id < id) {
+        nAnterior = nAux;
+        nAux = nAux->siguiente;
+    }
+    if(nAux->id != id) {
+        //Nodo añadido
+        typename colecInterdep<ident,val>::Nodo nNew;
+        nNew.id = id;
+        nNew.v = v;
+        nNew.Numdepend = 0;
+        nNew.siguiente = nAux;
+        nNew.NodoDep = nullptr;
+
+        //Modificamos siguiente del nodo anterior al nodo añadido
+        nAnterior->siguiente = nNew;
+    }
 }
 
 #endif //fin de colecInterdep.hpp
