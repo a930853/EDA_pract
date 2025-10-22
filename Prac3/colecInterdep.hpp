@@ -1,4 +1,5 @@
 /* Javier Martínez Virto 930853
+* Víctor Marteles Martínez 928927
 */
 
 #ifndef COLECINTERDEP_HPP
@@ -98,7 +99,7 @@ bool esVacia(colecInterdep<ident,val> ci) {
 
 template<typename ident,typename val>
 bool existe(ident id,colecInterdep<ident,val> ci) {
-    Nodo *nAux = ci.inicio;
+    typename colecInterdep<ident,val>::Nodo *nAux = ci.inicio;
     while (nAux != nullptr && nAux->id < id) {
         nAux = nAux->siguiente;
     }
@@ -107,7 +108,7 @@ bool existe(ident id,colecInterdep<ident,val> ci) {
 
 template<typename ident,typename val>
 bool existeDependiente(ident id,colecInterdep<ident,val> ci) {
-    Nodo *nAux = ci.inicio;
+    typename colecInterdep<ident,val>::Nodo *nAux = ci.inicio;
     while (nAux != nullptr && nAux->NodoDep->id != id) {
         nAux = nAux->siguiente;
     }

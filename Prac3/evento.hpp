@@ -1,6 +1,6 @@
-/* Javier Martínez Virto, 930853.
+/* Javier Martínez Virto, 930853
+* Víctor Marteles Martínez, 928927
 */
-
 #ifndef EVENTO_HPP
 #define EVENTO_HPP
 
