@@ -43,12 +43,9 @@ struct colecInterdep{
 
   private: //declaracion de la representacion interna del tipo
     struct Nodo {
-        // --- Datos de la tupla ---
         ident id;           // Identificador (clave de ordenación)
         val v;              // Valor asociado
         unsigned NumDepend;  // Contador de dependientes directos
-
-        // --- Punteros estructurales ---
         Nodo* siguiente;    // Puntero al siguiente nodo en la lista (ordenada por 'id')
         Nodo* NodoDep;   // Puntero al nodo al cual es dependiente (es NULL si es independiente)
     };
@@ -67,8 +64,6 @@ struct colecInterdep{
      * la operación 'tamaño' sea de coste O(1).
      */
     unsigned numElementos;
-
-    // --- Campos del Iterador ---
 
     /**
      * Puntero de estado del iterador.
@@ -112,7 +107,11 @@ bool existe(ident id,colecInterdep<ident,val> ci) {
 
 template<typename ident,typename val>
 bool existeDependiente(ident id,colecInterdep<ident,val> ci) {
-   
+    Nodo *nAux = ci.inicio;
+    while (nAux != nullptr && nAux->NodoDep->id != id) {
+        nAux = nAux->siguiente;
+    }
+    return (nAux != nullptr && nAux->NodoDep->id == id);
 }
 
 #endif //fin de colecInterdep.hpp
