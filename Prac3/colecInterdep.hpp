@@ -31,7 +31,10 @@ template<typename ident,typename val>
 bool existeIndependiente(ident id,colecInterdep<ident,val> ci);
 
 template<typename ident,typename val>
-void anyadirIndependiente(colecInterdep<ident,val> ci, ident id, val v);
+void anyadirIndependiente(colecInterdep<ident,val> &ci, ident id, val v);
+
+template<typename ident,typename val>
+void anyadirDependiente(colecInterdep<ident,val> &ci, ident id, val v, ident idSup);
 
 // FIN predeclaracion del TAD GENERICO colecInterdep (Fin INTERFAZ)
 
@@ -48,8 +51,11 @@ struct colecInterdep{
     friend bool existe<ident,val>(ident id,colecInterdep<ident,val> ci);
     friend bool existeDependiente<ident,val>(ident id,colecInterdep<ident,val> ci);
     friend bool existeIndependiente<ident,val>(ident id,colecInterdep<ident,val> ci);
-    friend void anyadirIndependiente<ident,val>(colecInterdep<ident,val> ci, ident id, val v);
+    friend void anyadirIndependiente<ident,val>(colecInterdep<ident,val> &ci, ident id, val v);
+    friend void anyadirDependiente<ident,val>(colecInterdep<ident,val> &ci, ident id, val v, ident idSup);
 
+    //Operaciones iterador
+    
   private: //declaracion de la representacion interna del tipo
     struct Nodo {
         ident id;           // Identificador (clave de ordenación)
@@ -133,24 +139,61 @@ bool existeIndependiente(ident id,colecInterdep<ident,val> ci) {
 }
 
 template<typename ident,typename val>
-void anyadirIndependiente(colecInterdep<ident,val> ci, ident id, val v) {
-    typename colecInterdep<ident,val>::Nodo *nAux = ci.inicio; //puntero para recorrer la colección
-    typename colecInterdep<ident,val>::Nodo *nAnterior;
+void anyadirIndependiente(colecInterdep<ident,val> &ci, ident id, val v) {
+    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección y su anterior
+        *nAux = ci.inicio, *nAnterior = ci.inicio;
     while (nAux != nullptr && nAux->id < id) {
         nAnterior = nAux;
         nAux = nAux->siguiente;
     }
-    if(nAux->id != id) {
+    if (nAux == nullptr || nAux->id != id) {
         //Nodo añadido
-        typename colecInterdep<ident,val>::Nodo nNew;
-        nNew.id = id;
-        nNew.v = v;
-        nNew.Numdepend = 0;
-        nNew.siguiente = nAux;
-        nNew.NodoDep = nullptr;
+        typename colecInterdep<ident,val>::Nodo 
+            *nNew = new typename colecInterdep<ident,val>::Nodo;
+        nNew->id = id;
+        nNew->v = v;
+        nNew->Numdepend = 0;
+        nNew->NodoDep = nullptr;
+        ci.numElementos++;
+        if (nAux == nAnterior) {    //caso nNew al principio o colección vacia
+            ci.inicio = nNew;
+            nNew->siguiente = nAux;
+        } else {    //caso nNew última posición o entre valores
+            nAnterior->siguiente = nNew;
+            nNew->siguiente = nAux;
+        }
+    }
+}
 
-        //Modificamos siguiente del nodo anterior al nodo añadido
-        nAnterior->siguiente = nNew;
+template<typename ident,typename val>
+void anyadirDependiente(colecInterdep<ident,val> &ci, ident id, val v, ident idSup) {
+    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección,su anterior u uno para buscar el supervisor
+        *nAux = ci.inicio, *nAnterior = ci.inicio, *nAuxSup = ci.inicio;
+    while (nAuxSup != nullptr &&  nAuxSup->id < idSup) {
+        nAuxSup = nAuxSup->siguiente;
+    }
+    if (nAuxSup == nullptr || nAuxSup->id != idSup) {return;}
+    while (nAux != nullptr && nAux->id < id) {
+        nAnterior = nAux;
+        nAux = nAux->siguiente;
+    }
+    if (nAux == nullptr || nAux->id != id) {
+        //Nodo añadido
+        typename colecInterdep<ident,val>::Nodo 
+            *nNew = new typename colecInterdep<ident,val>::Nodo;
+        nNew->id = id;
+        nNew->v = v;
+        nNew->Numdepend = 0;
+        nNew->NodoDep = nAuxSup;
+        nAuxSup->NumDepend++;
+        ci.numElementos++;
+        if (nAux == nAnterior) {    //caso nNew al principio o colección vacia
+            ci.inicio = nNew;
+            nNew->siguiente = nAux;
+        } else {    //caso nNew última posición o entre valores
+            nAnterior->siguiente = nNew;
+            nNew->siguiente = nAux;
+        }
     }
 }
 
