@@ -29,7 +29,7 @@ INDependiente
 -.-.-.-.-
 A
 apertura_P001
-Abierta puerta P001 
+Abierta puerta P001
 3
 DEPendiente
 Validacion_P001_exterior
