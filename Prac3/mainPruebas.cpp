@@ -31,6 +31,7 @@ int main() {
     int prio;       // prioridad (int)
     string tipoDep;  // tipo de dependencia (dep. o ind.)
     string eventoSup;   // nombre del evento del cual depende el evento que se añade ("vacío" si es independiente)
+    bool error;     // error en funciones parciales
 
     while (f >> instruccion) {     
 	    getline(f,salto);   
@@ -51,26 +52,87 @@ int main() {
             if(tipoDep == "DEPendiente") {
                 anyadirDependiente(ci,nom,e,eventoSup);
 
-            } else {                // poner un caso por si no pone es ni dep ni ind ??????????????????????????
+            } else {                // poner un caso por si no pone ni DEP ni IND ??????????????????????????
                 anyadirIndependiente(ci,nom,e);
 
             }
             
             
-            // quitar esto después de hacer las pruebas !!!!!!!!!!!!!!!!!!!!!!!
-            cout << nom << " / " << desc << " -> " << descripcion(e) << " / " << prio << " -> " << suPrioridad(e) 
-            << " / " << tipoDep << " / " << eventoSup << endl;
+                // quitar esto después de hacer las pruebas !!!!!!!!!!!!!!!!!!!!!!!
+                cout << nom << " / " << desc << " -> " << descripcion(e) << " / " << prio << " -> " << suPrioridad(e) 
+                 << " / " << tipoDep << " / " << eventoSup << endl;
 
 
 
-                // salida.txt
+                // funciones para salida.txt
 
             
 
 
-	    } else if (instruccion == "O") {         
-		//... sigue el programa 
-        }//... sigue el programa
+
+
+	    } else if (instruccion == "C") {         
+            getline(f,nom);
+            getline(f,desc);
+            getline(f,prioS);
+            prio = stoi(prioS);     // convertimos el string "prioS" en un int "prio"
+
+
+            obtenerVal(nom,ci,e,error);
+            if(!error) {            // parar el programa si hay error o seguir sin más a por la sig. instrucción ?!?!?!?!??!?!??!?!
+                cambiarDescripcion(e,desc);
+                cambiarPrioridad(e,prio);
+                actualizarVal(ci,nom,e,error);
+                // repasar lo de arriba y continuar si falta algo
+
+
+
+                // funciones para salida.txt
+
+
+
+            }
+
+
+
+            
+
+        } else if (instruccion == "D") {
+
+
+
+
+        } else if (instruccion == "O") {
+
+
+
+
+        } else if (instruccion == "E") {
+
+
+
+
+        } else if (instruccion == "I") {
+
+
+
+
+        } else if (instruccion == "B") {
+
+
+
+
+        } else if (instruccion == "LD") {
+
+
+
+
+        } else if (instruccion == "LT") {
+
+
+
+
+        } 
     }
 
 
