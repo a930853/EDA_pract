@@ -11,6 +11,7 @@
 using namespace std;
 
 int main() {
+
     
     colecInterdep<string,evento> ci;
 
@@ -139,4 +140,5 @@ int main() {
     
 
     f.close();
+>>>>>>> fc005302bc0c0cd5964ff99deb06c67b019b1a61
 }
