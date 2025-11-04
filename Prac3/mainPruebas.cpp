@@ -1,35 +1,73 @@
+/* Javier Martínez Virto 930853
+* Víctor Marteles Martínez 928927
+*/
+
 #include "evento.hpp"
 #include "colecInterdep.hpp"
+#include <iostream>
+#include <fstream>
+#include <string>
+
 using namespace std;
 
 int main() {
-    colecInterdep<int,char> ci;
-    int id,idSup;
-    char v;
-    bool error,esDep;
-    unsigned NumDep;
-      crear(ci);
-      tamanyo(ci);
-      esVacia(ci);
-      existe( id,ci);
-      existeDependiente( id,ci);
-      existeIndependiente( id,ci);
-      anyadirIndependiente(ci,  id,  v);
-      anyadirDependiente(ci,  id,  v,  idSup);
-      hacerDependiente(ci,  id,  idSup);
-      hacerIndependiente(ci,  id);
-      actualizarVal(ci,  id,  v,  error);
-      obtenerVal( id,ci,  v,  error);
-      obtenerSupervisor( id, ci,  idSup,  error);
-      obtenerNumDependientes( id, ci,  NumDep,  error);
-      borrar( id,  ci);
-      iniciarIterador( ci);
-      existeSiguiente(ci);
-      siguienteIdent(ci,  id,  error);
-      siguienteVal(ci,  v,  error);
-      siguienteDependiente(ci,  esDep,  error);
-      siguienteSuperior(ci,  idSup,  error);
-      siguienteNumDependientes(ci,  NumDep,  error);
-      avanza( ci,  error);
-    return 0;
+
+    
+    colecInterdep<string,evento> ci;
+
+    crear(ci);  // creamos la colección vacía
+
+    ifstream f; 
+    f.open("entrada.txt"); 
+    if(!f.is_open()) {
+        cerr << "No se pudo abrir el archivo." << endl;
+        return 1;
+    }
+
+    string instruccion, salto; 
+    string nom;     // nombre
+    evento e;       // evento
+    string desc;    // descripción
+    string prioS;   // prioridad (string)
+    int prio;       // prioridad (int)
+    string tipoDep;  // tipo de dependencia (dep. o ind.)
+    string eventoSup;   // nombre del evento del cual depende el evento que se añade ("vacío" si es independiente)
+
+    while (f >> instruccion) {     
+	    getline(f,salto);   
+         
+	    if (instruccion == "A") {         
+            
+            // quizás hay que poner aquí un "existe()" o algo parecido ????????????????????
+            
+            getline(f,nom);
+            getline(f,desc);
+            getline(f,prioS);
+            prio = stoi(prioS);     // convertimos el string "prioS" en un int "prio"
+            getline(f,tipoDep);
+            getline(f,eventoSup);
+
+            crearEvento(desc,prio,e); // creamos el evento con la descripción y prioridad dadas
+
+            if(tipoDep == "DEPendiente") {
+                anyadirDependiente(ci,nom,e,eventoSup);
+
+            } else {                // poner un caso por si no pone es ni dep ni ind ??????????????????????????
+                anyadirIndependiente(ci,nom,e);
+
+                
+                // salida.txt
+
+            }
+
+
+            
+
+
+	    } else if (instruccion == "O") {         
+		//... sigue el programa 
+        }//... sigue el programa
+    }
+    f.close();
+>>>>>>> fc005302bc0c0cd5964ff99deb06c67b019b1a61
 }
