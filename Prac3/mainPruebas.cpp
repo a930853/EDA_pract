@@ -17,7 +17,7 @@ int main() {
     crear(ci);  // creamos la colección vacía
 
     ifstream f; 
-    f.open("entrada.txt"); 
+    f.open("entradaPrueba.txt"); // cambiar .txt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if(!f.is_open()) {
         cerr << "No se pudo abrir el archivo." << endl;
         return 1;
@@ -54,11 +54,16 @@ int main() {
             } else {                // poner un caso por si no pone es ni dep ni ind ??????????????????????????
                 anyadirIndependiente(ci,nom,e);
 
-                
-                // salida.txt
-
             }
+            
+            
+            // quitar esto después de hacer las pruebas !!!!!!!!!!!!!!!!!!!!!!!
+            cout << nom << " / " << desc << " -> " << descripcion(e) << " / " << prio << " -> " << suPrioridad(e) 
+            << " / " << tipoDep << " / " << eventoSup << endl;
 
+
+
+                // salida.txt
 
             
 
@@ -67,5 +72,9 @@ int main() {
 		//... sigue el programa 
         }//... sigue el programa
     }
+
+
+    
+
     f.close();
 }

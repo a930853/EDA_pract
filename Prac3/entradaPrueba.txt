@@ -4,3 +4,9 @@ Encendidas luces008, deteccion sensor presencia
 2
 DEPendiente
 presencia_S008
+A
+cierre_2025_10_6
+Cierre del edificio
+2
+INDependiente
+-.-.-.-.-
