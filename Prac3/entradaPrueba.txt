@@ -1,0 +1,6 @@
+A
+ON_luces Z008
+Encendidas luces008, deteccion sensor presencia
+2
+DEPendiente
+presencia_S008
