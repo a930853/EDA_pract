@@ -87,7 +87,7 @@ int main() {
 
 
 
-                // funciones para salida.txt
+                // funciones para salida.txt    
 
 
 
