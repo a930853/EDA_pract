@@ -17,10 +17,17 @@ int main() {
 
     crear(ci);  // creamos la colección vacía
 
-    ifstream f; 
-    f.open("entradaPrueba.txt"); // cambiar .txt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    if(!f.is_open()) {
-        cerr << "No se pudo abrir el archivo." << endl;
+    ifstream ent; 
+    ofstream sal;
+    ent.open("entradaPrueba.txt"); // cambiar .txt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    if(!ent.is_open()) {
+        cerr << "No se pudo abrir el archivo entrada." << endl;
+        return 1;
+    }
+
+    sal.open("salidaPrueba.txt"); // cambiar .txt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    if(!sal.is_open()) {
+        cerr << "No se pudo abrir el archivo salida." << endl;
         return 1;
     }
 
@@ -34,38 +41,54 @@ int main() {
     string eventoSup;   // nombre del evento del cual depende el evento que se añade ("vacío" si es independiente)
     bool error;     // error en funciones parciales
 
-    while (f >> instruccion) {     
-	    getline(f,salto);   
+    while (ent >> instruccion) {     
+	    getline(ent,salto);   
          
 	    if (instruccion == "A") {         
             
-            // quizás hay que poner aquí un "existe()" o algo parecido ????????????????????
             
-            getline(f,nom);
-            getline(f,desc);
-            getline(f,prioS);
+            
+            getline(ent,nom);
+            getline(ent,desc);
+            getline(ent,prioS);
             prio = stoi(prioS);     // convertimos el string "prioS" en un int "prio"
-            getline(f,tipoDep);
-            getline(f,eventoSup);
+            getline(ent,tipoDep);
+            getline(ent,eventoSup);
 
             crearEvento(desc,prio,e); // creamos el evento con la descripción y prioridad dadas
+
+
+            // quizás hay que poner aquí un "existe()" o algo parecido (para no introducirlo cuando ya está) ????????????????????
 
             if(tipoDep == "DEPendiente") {
                 anyadirDependiente(ci,nom,e,eventoSup);
 
+                if(existeDependiente(nom,ci)) {    // si se ha añadido bien
+                    sal << "INTRODUCIDO: ";
+
+                } else {
+                    sal << "NO INTRODUCIDO: ";
+                }
+
+                sal << "[ " << nom << " -de-> " << eventoSup << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
+
             } else {                // poner un caso por si no pone ni DEP ni IND ??????????????????????????
                 anyadirIndependiente(ci,nom,e);
 
+                if(existeIndependiente(nom,ci)) {    // si se ha añadido bien
+                    sal << "INTRODUCIDO: ";
+
+                } else {
+                    sal << "NO INTRODUCIDO: ";
+                }
+
+                sal << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
             }
             
-            
-                // quitar esto después de hacer las pruebas !!!!!!!!!!!!!!!!!!!!!!!
-                cout << nom << " / " << desc << " -> " << descripcion(e) << " / " << prio << " -> " << suPrioridad(e) 
-                 << " / " << tipoDep << " / " << eventoSup << endl;
 
 
 
-                // funciones para salida.txt
+                
 
             
 
@@ -73,9 +96,9 @@ int main() {
 
 
 	    } else if (instruccion == "C") {         
-            getline(f,nom);
-            getline(f,desc);
-            getline(f,prioS);
+            getline(ent,nom);
+            getline(ent,desc);
+            getline(ent,prioS);
             prio = stoi(prioS);     // convertimos el string "prioS" en un int "prio"
 
 
@@ -83,12 +106,10 @@ int main() {
             if(!error) {            // parar el programa si hay error o seguir sin más a por la sig. instrucción ?!?!?!?!??!?!??!?!
                 cambiarDescripcion(e,desc);
                 cambiarPrioridad(e,prio);
-                actualizarVal(ci,nom,e,error);
-                // repasar lo de arriba y continuar si falta algo
+                actualizarVal(ci,nom,e,error); // parar el programa si hay error o seguir sin más a por la sig. instrucción ?!?!?!?!??!?!??!?!
 
-
-
-                // funciones para salida.txt
+                                
+                // funciones para salida.txt    
 
 
 
@@ -98,38 +119,61 @@ int main() {
 
             
 
-        } else if (instruccion == "D") {
-
-
-
-
         } else if (instruccion == "O") {
+            getline(ent,nom);
 
+            // funciones para obtener la info relacionada con el nombre encontrado
+
+
+            // funciones para salida.txt   
 
 
 
         } else if (instruccion == "E") {
+            getline(ent,nom);
 
+            bool exist = existe(nom,ci);    // lo dejo así de momento (aunque creo que se debería declarar la variable fuera)
 
+            // funciones para salida.txt   
 
 
         } else if (instruccion == "I") {
+            getline(ent,nom);
 
+            hacerIndependiente(ci,nom);
+
+            // funciones para salida.txt   
+
+
+        } else if (instruccion == "D") {
+            getline(ent,nom);
+            getline(ent,eventoSup);
+
+            hacerDependiente(ci,nom,eventoSup);
+
+
+            
+            // funciones para salida.txt   
 
 
 
         } else if (instruccion == "B") {
+            getline(ent,nom);
 
+            borrar(nom,ci); // con esto ya se borra el evento también ???????????????????????????????????????
 
+            // funciones para salida.txt   
 
 
         } else if (instruccion == "LD") {
 
+            // funciones para salida.txt   
 
 
 
         } else if (instruccion == "LT") {
 
+            // funciones para salida.txt   
 
 
 
@@ -139,6 +183,5 @@ int main() {
 
     
 
-    f.close();
->>>>>>> fc005302bc0c0cd5964ff99deb06c67b019b1a61
+    ent.close();
 }
