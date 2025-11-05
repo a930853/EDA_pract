@@ -10,3 +10,39 @@ Encendidas luces008, deteccion sensor presencia
 2
 DEPendiente
 presencia_S008
+A
+Validacion_P001_exterior
+Validacion acceso en puerta P001, desde exterior
+3
+INDependiente
+-.-.-.-.-
+A
+apertura_P001
+Abierta puerta P001
+3
+DEPendiente
+Validacion_P001_exterior
+A
+presencia_S008
+Deteccion presencia, sensor S008
+3
+INDependiente
+-.-.-.-.-
+A
+ON_luces Z008
+Encendidas luces008, deteccion sensor presencia
+4
+DEPendiente
+presencia_S008
+A
+OFF_luces Z008
+Apagadas luces zona 008, por expiracion tiempo
+2
+DEPendiente
+ON_luces Z008
+A
+OFF_luces Z008
+Apagadas luces zona 008, por expiracion tiempo
+2
+DEPendiente
+ON_luces Z008

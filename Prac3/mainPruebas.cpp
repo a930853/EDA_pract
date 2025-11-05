@@ -70,7 +70,7 @@ int main() {
                     sal << "NO INTRODUCIDO: ";
                 }
 
-                sal << "[ " << nom << " -de-> " << eventoSup << " ]" << "---" << desc << "---" << "( " << prio << " )" << endl;
+                sal << "[ " << nom << " -de-> " << eventoSup << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
 
             } else {                // poner un caso por si no pone ni DEP ni IND ??????????????????????????
                 anyadirIndependiente(ci,nom,e);
@@ -82,13 +82,13 @@ int main() {
                     sal << "NO INTRODUCIDO: ";
                 }
 
-                sal << "[ " << nom << " ]" << "---" << desc << "---" << "( " << prio << " )" << endl;
+                sal << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
             }
             
 
 
 
-                // funciones para salida.txt
+                
 
             
 
