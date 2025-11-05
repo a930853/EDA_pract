@@ -83,16 +83,6 @@ int main() {
 
                 sal << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
             }
-            
-
-
-
-                
-
-            
-
-
-
 
 	    } else if (instruccion == "C") {         
             getline(ent,nom);
@@ -158,11 +148,12 @@ int main() {
 
         } else if (instruccion == "B") {
             getline(ent,nom);
-
-            borrar(nom,ci); // con esto ya se borra el evento también ???????????????????????????????????????
-
-            // funciones para salida.txt   
-
+            if (existe(nom,ci)) {
+                borrar(nom,ci);
+                if(!existe(nom,ci)){
+                    sal << "BORRADO: " << nom << endl;
+                } else {sal << "NO BORRADO: " << nom << endl;}
+            } else {sal << "NO BORRADO: " << nom << endl;} 
 
         } else if (instruccion == "LD") {
             getline(ent,nom);
@@ -206,6 +197,7 @@ int main() {
                 sal << "****FINAL dependientes -de-> " << nomAux << endl;
                 }
             } else {sal << "****DESCONOCIDO: " << endl;}
+
         } else if (instruccion == "LT") {
 
             sal << "-----LISTADO: " << tamanyo(ci) << endl;
