@@ -35,8 +35,7 @@ int main() {
     evento e;       // evento
     string desc;    // descripción
     string prioS;   // prioridad (string)
-    int prio;       // prioridad (int)
-    unsigned NumDep;
+    unsigned NumDep, prio; // número de dependientes
     string tipoDep;  // tipo de dependencia (dep. o ind.)
     string eventoSup;   // nombre del evento del cual depende el evento que se añade ("vacío" si es independiente)
     bool esDep,error;     // error en funciones parciales
@@ -54,23 +53,23 @@ int main() {
             getline(ent,tipoDep);
             getline(ent,eventoSup);
 
-            crearEvento(desc,prio,e); // creamos el evento con la descripción y prioridad dadas
+            if(!existe(nom,ci)) { // si NO existe el evento
+                crearEvento(desc,prio,e); // creamos el evento con la descripción y prioridad dadas
 
-            // quizás hay que poner aquí un "existe()" o algo parecido (para no introducirlo cuando ya está) ????????????????????
 
-            if(tipoDep == "DEPendiente") {
-                anyadirDependiente(ci,nom,e,eventoSup);
+                if(tipoDep == "DEPendiente") {
+                    anyadirDependiente(ci,nom,e,eventoSup);
 
-                if(existeDependiente(nom,ci)) {    // si se ha añadido bien
-                    sal << "INTRODUCIDO: ";
+                    if(existeDependiente(nom,ci)) {    // si se ha añadido bien
+                        sal << "INTRODUCIDO: ";
 
-                } else {
-                    sal << "NO INTRODUCIDO: ";
-                }
+                    } else {
+                        sal << "NO INTRODUCIDO: ";
+                    }
 
-                sal << "[ " << nom << " -de-> " << eventoSup << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
+                    sal << "[ " << nom << " -de-> " << eventoSup << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
 
-                } else {                // poner un caso por si no pone ni DEP ni IND ??????????????????????????
+                } else {                
                     anyadirIndependiente(ci,nom,e);
 
                     if(existeIndependiente(nom,ci)) {    // si se ha añadido bien
@@ -80,7 +79,16 @@ int main() {
                         sal << "NO INTRODUCIDO: ";
                     }
 
-                sal << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
+                    sal << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
+                }
+            } else {    // si ya existe el evento
+                sal << "NO INTRODUCIDO: ";
+                if(tipoDep == "DEPendiente") {
+                    sal << "[ " << nom << " -de-> " << eventoSup << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
+                } else {
+                    sal << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
+                }
+
             }
 
 	    } else if (instruccion == "C") {         
@@ -100,63 +108,104 @@ int main() {
                     obtenerNumDependientes(nom,ci,NumDep,error);
                     if(!error) { // ha obtenido NumDep
                         if(existeDependiente(nom,ci)) {  // si es dependiente
-                            sal << "CAMBIADO: [ " << nom << " -de-> " << eventoSup << " ;;; " << NumDep << " ] --- " << desc << " --- ( " << prio << " )" << endl;
-                        
+                            obtenerSupervisor(nom,ci,eventoSup,error);
+                            if(!error) { // si se ha obtenido el supervisor
+                                sal << "CAMBIADO: [ " << nom << " -de-> " << eventoSup << " ;;; " << NumDep << " ] --- " << desc << " --- ( " << prio << " )" << endl;
+                            } else { // si NO se ha obtenido el supervisor
+                                sal <<  "NO CAMBIADO: " << nom << endl;
+                            }   
                         } else { // si es independiente
-                            sal << "CAMBIADO: [ " << nom << " --- " << NumDep << " ] --- " << desc << " --- ( " << prio << " )" << endl;
+                                sal << "CAMBIADO: [ " << nom << " --- " << NumDep << " ] --- " << desc << " --- ( " << prio << " )" << endl;
                         }
                     } else { // si NO ha obtenido NumDep
                         sal <<  "NO CAMBIADO: " << nom << endl;
                     }
-
                 } else {    // si NO se ha podido actualizar el evento
                     sal <<  "NO CAMBIADO: " << nom << endl;
 
                 }
-
-                
-
             } else {    // si no existe el evento o ha habido otro fallo en la obtención de este
                 sal <<  "NO CAMBIADO: " << nom << endl;
-
             }                    
+
 
 
         } else if (instruccion == "O") {
             getline(ent,nom);
+            
+            if(existe(nom,ci)) { // si existe
+                obtenerNumDependientes(nom,ci,NumDep,error);
+                if(!error) { // ha obtenido NumDep
+                    obtenerVal(nom,ci,e,error); 
+                    if(!error) {    // ha podido obtener el evento
+                        if(existeDependiente(nom,ci)) { // si es dependiente
+                            obtenerSupervisor(nom,ci,eventoSup,error);
+                            if(!error) { // si se ha obtenido el supervisor
+                                sal << "LOCALIZADO: " << "[ " << nom << " -de-> " << eventoSup << " ;;; " << NumDep << " ] --- " << descripcion(e) << " --- ( " << suPrioridad(e) << " )" << endl;
+                            } else { // si NO se ha obtenido el supervisor
+                                sal << "NO LOCALIZADO: " << nom << endl;
+                            }
+                        } else { // si es independiente
+                            sal << "LOCALIZADO: " << "[ " << nom << " --- " << NumDep << " ] --- " << descripcion(e) << " --- ( " << suPrioridad(e) << " )"<< endl;
+                        }
 
-            // funciones para obtener la info relacionada con el nombre encontrado
-
-
-            // funciones para salida.txt   
+                    } else {    // NO ha podido obtener el evento
+                        sal << "NO LOCALIZADO: " << nom << endl;
+                    }
+                } else { // si NO ha obtenido NumDep
+                    sal << "NO LOCALIZADO: " << nom << endl;
+                }
+            } else { // si no existe
+                sal << "NO LOCALIZADO: " << nom << endl;
+            }
 
 
 
         } else if (instruccion == "E") {
             getline(ent,nom);
 
-            bool exist = existe(nom,ci);    // lo dejo así de momento (aunque creo que se debería declarar la variable fuera)
+            if(existe(nom,ci)) {
+                if(existeDependiente(nom,ci)) {
+                    sal << "DEPendiente: ";
+                } else {
+                    sal << "INDEPendiente: ";
+                }
+            } else {
+                sal << "DESCONOCIDO: ";
+            }
+            sal << nom << endl;
 
-            // funciones para salida.txt   
+
 
 
         } else if (instruccion == "I") {
             getline(ent,nom);
 
-            hacerIndependiente(ci,nom);
-
-            // funciones para salida.txt   
+            if(existe(nom,ci)) { // si existe el evento
+                if(existeIndependiente(nom,ci)) { // era ya independiente
+                    sal << "YA ERA INDepend.: ";
+                } else {    // NO era independiente
+                    hacerIndependiente(ci,nom);
+                    sal << "INDEPENDIZADO: ";
+                }
+            } else {    // si NO existe el evento
+                sal << "NO INDEPENDIZADO: ";
+            }
+            sal << nom << endl;
 
 
         } else if (instruccion == "D") {
             getline(ent,nom);
             getline(ent,eventoSup);
 
-            hacerDependiente(ci,nom,eventoSup);
+            if(existe(nom,ci) && existe(eventoSup,ci)) {    // existen ambos eventos
+                hacerDependiente(ci,nom,eventoSup);
+                sal << "INTENTANDO hacer depend.: ";
+            } else {    // no existe alguno de los eventos (o ninguno)
+                sal << "IMPOSIBLE hacer depend.: ";
+            }
+            sal << nom << " -de-> " << eventoSup << endl;
 
-
-            
-            // funciones para salida.txt   
 
 
 
@@ -168,6 +217,8 @@ int main() {
                     sal << "BORRADO: " << nom << endl;
                 } else {sal << "NO BORRADO: " << nom << endl;}
             } else {sal << "NO BORRADO: " << nom << endl;} 
+
+
 
         } else if (instruccion == "LD") {
             getline(ent,nom);
@@ -214,6 +265,8 @@ int main() {
                 }
             else {sal << "****DESCONOCIDO: " << endl;}
 
+
+            
         } else if (instruccion == "LT") {
 
             sal << "-----LISTADO: " << tamanyo(ci) << endl;
