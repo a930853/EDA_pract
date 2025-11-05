@@ -37,6 +37,7 @@ int main() {
     string desc;    // descripción
     string prioS;   // prioridad (string)
     int prio;       // prioridad (int)
+    unsigned NumDep;
     string tipoDep;  // tipo de dependencia (dep. o ind.)
     string eventoSup;   // nombre del evento del cual depende el evento que se añade ("vacío" si es independiente)
     bool error;     // error en funciones parciales
@@ -45,8 +46,6 @@ int main() {
 	    getline(ent,salto);   
          
 	    if (instruccion == "A") {         
-            
-            
             
             getline(ent,nom);
             getline(ent,desc);
@@ -58,41 +57,44 @@ int main() {
             crearEvento(desc,prio,e); // creamos el evento con la descripción y prioridad dadas
 
 
-            // quizás hay que poner aquí un "existe()" o algo parecido (para no introducirlo cuando ya está) ????????????????????
+            
+            if(!existe(nom,ci)) { // si no existe un evento con el mismo nombre
+                if(tipoDep == "DEPendiente") {
+                    anyadirDependiente(ci,nom,e,eventoSup);
 
-            if(tipoDep == "DEPendiente") {
-                anyadirDependiente(ci,nom,e,eventoSup);
+                    if(existeDependiente(nom,ci)) {    // si se ha añadido bien
+                        sal << "INTRODUCIDO: ";
 
-                if(existeDependiente(nom,ci)) {    // si se ha añadido bien
-                    sal << "INTRODUCIDO: ";
+                    } else {
+                        sal << "NO INTRODUCIDO: ";
+                    }
 
-                } else {
-                    sal << "NO INTRODUCIDO: ";
+                    sal << "[ " << nom << " -de-> " << eventoSup << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
+
+                } else {                // poner un caso por si no pone ni DEP ni IND ??????????????????????????
+                    anyadirIndependiente(ci,nom,e);
+
+                    if(existeIndependiente(nom,ci)) {    // si se ha añadido bien
+                        sal << "INTRODUCIDO: ";
+
+                    } else {
+                        sal << "NO INTRODUCIDO: ";
+                    }
+
+                    sal << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
                 }
 
-                sal << "[ " << nom << " -de-> " << eventoSup << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
-
-            } else {                // poner un caso por si no pone ni DEP ni IND ??????????????????????????
-                anyadirIndependiente(ci,nom,e);
-
-                if(existeIndependiente(nom,ci)) {    // si se ha añadido bien
-                    sal << "INTRODUCIDO: ";
+            } else {    // si existe ya un evento con el mismo nombre
+                if(tipoDep == "DEPendiente") {
+                    sal << "NO INTRODUCIDO: " << "[ " << nom << " -de-> " << eventoSup << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
 
                 } else {
-                    sal << "NO INTRODUCIDO: ";
-                }
+                    sal << "NO INTRODUCIDO: " << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
 
-                sal << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
+                }
             }
             
-
-
-
-                
-
             
-
-
 
 
 	    } else if (instruccion == "C") {         
@@ -102,18 +104,42 @@ int main() {
             prio = stoi(prioS);     // convertimos el string "prioS" en un int "prio"
 
 
-            obtenerVal(nom,ci,e,error);
-            if(!error) {            // parar el programa si hay error o seguir sin más a por la sig. instrucción ?!?!?!?!??!?!??!?!
+            obtenerVal(nom,ci,e,error);     // ponemos el evento en la variable "e"
+            if(!error) {    // si existe el evento y se ha podido "obtener"
                 cambiarDescripcion(e,desc);
                 cambiarPrioridad(e,prio);
-                actualizarVal(ci,nom,e,error); // parar el programa si hay error o seguir sin más a por la sig. instrucción ?!?!?!?!??!?!??!?!
+                actualizarVal(ci,nom,e,error); 
+                
+                if(!error) { // si se ha podido actualizar el evento 
+                    if(existeDependiente(nom,ci)) {  // si es dependiente
+                        obtenerNumDependientes(nom,ci,NumDep,error);
+                        if(!error) {
+                            sal << "CAMBIADO: [ " << nom << " -de-> " << eventoSup << " ;;; " << NumDep << " ] --- " << desc << " --- ( " << prio << " )" << endl;
+                        } else {
+                            sal <<  "NO CAMBIADO: " << nom << endl;
+                        }
 
-                                
-                // funciones para salida.txt    
+                    } else {
+
+                    }
+
+                } else {    // si NO se ha podido actualizar el evento
+                    sal <<  "NO CAMBIADO: " << nom << endl;
+
+                }
+
+                
+
+            } else {    // si no existe el evento o ha habido otro fallo en la obtención de este
+                sal <<  "NO CAMBIADO: " << nom << endl;
+
+            }                    
 
 
+            // quizás se puede optimizar todo si se sale de la función si hay error y después pone "NO CAMBIADO: " ???????????????????????????????'
 
-            }
+
+        
 
 
 
