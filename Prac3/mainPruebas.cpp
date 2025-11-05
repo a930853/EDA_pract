@@ -36,7 +36,7 @@ int main() {
     string desc;    // descripción
     string prioS;   // prioridad (string)
     int prio;       // prioridad (int)
-    unsigned NumDep;    // número de dependientes
+    unsigned NumDep;
     string tipoDep;  // tipo de dependencia (dep. o ind.)
     string eventoSup;   // nombre del evento del cual depende el evento que se añade ("vacío" si es independiente)
     bool esDep,error;     // error en funciones parciales
@@ -121,15 +121,6 @@ int main() {
 
             }                    
 
-
-            // quizás se puede optimizar todo si se sale de la función si hay error y después pone "NO CAMBIADO: " ???????????????????????????????'
-
-
-        
-
-
-
-            
 
         } else if (instruccion == "O") {
             getline(ent,nom);
@@ -216,17 +207,19 @@ int main() {
                             sal << "[ " << nom << " -de-> " << eventoSup << " ;;; " << NumDep 
                             << " ]" << " --- " << desc << " --- ( " << prio << " )" << endl;
                         }
-                }
+                    }
+                    avanza(ci,error);
+                } 
                 sal << "****FINAL dependientes -de-> " << nomAux << endl;
                 }
-            } else {sal << "****DESCONOCIDO: " << endl;}
+            else {sal << "****DESCONOCIDO: " << endl;}
 
         } else if (instruccion == "LT") {
 
             sal << "-----LISTADO: " << tamanyo(ci) << endl;
             iniciarIterador(ci);
             error = false;
-            while (existeSiguiente(ci)) {
+            while (existeSiguiente(ci) && !error) {
                 if(!error) {siguienteDependiente(ci,esDep,error);}
                 if(!error) {siguienteIdent(ci,nom,error);}
                 if(!error) {siguienteNumDependientes(ci,NumDep,error);}
