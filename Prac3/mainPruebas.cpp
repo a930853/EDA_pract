@@ -36,8 +36,7 @@ int main() {
     string desc;    // descripción
     string prioS;   // prioridad (string)
     int prio;       // prioridad (int)
-    unsigned NumDep;
-    unsigned NumDep;
+    unsigned NumDep;    // número de dependientes
     string tipoDep;  // tipo de dependencia (dep. o ind.)
     string eventoSup;   // nombre del evento del cual depende el evento que se añade ("vacío" si es independiente)
     bool esDep,error;     // error en funciones parciales
