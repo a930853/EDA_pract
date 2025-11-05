@@ -1,3 +1,6 @@
+C 
+apertura_2025_10_6
+apertura del edificio 2025-10-7
 A
 cierre_2025_10_6
 Cierre del edificio
@@ -46,3 +49,13 @@ Apagadas luces zona 008, por expiracion tiempo
 2
 DEPendiente
 ON_luces Z008
+A
+OFF_luces Z008
+Apagadas luces zona 008, por expiracion tiempo
+2
+INDEPendiente
+-.-.-.-.-
+C 
+apertura_P001
+Abierta puerta P001, previa validacion
+2
