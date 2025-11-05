@@ -11,8 +11,7 @@
 using namespace std;
 
 int main() {
-
-    
+ 
     colecInterdep<string,evento> ci;
 
     crear(ci);  // creamos la colección vacía
@@ -38,11 +37,13 @@ int main() {
     string prioS;   // prioridad (string)
     int prio;       // prioridad (int)
     unsigned NumDep;
+    unsigned NumDep;
     string tipoDep;  // tipo de dependencia (dep. o ind.)
     string eventoSup;   // nombre del evento del cual depende el evento que se añade ("vacío" si es independiente)
-    bool error;     // error en funciones parciales
+    bool esDep,error;     // error en funciones parciales
 
-    while (ent >> instruccion) {     
+    while (ent >> instruccion) { 
+
 	    getline(ent,salto);   
          
 	    if (instruccion == "A") {         
@@ -56,20 +57,19 @@ int main() {
 
             crearEvento(desc,prio,e); // creamos el evento con la descripción y prioridad dadas
 
+            // quizás hay que poner aquí un "existe()" o algo parecido (para no introducirlo cuando ya está) ????????????????????
 
-            
-            if(!existe(nom,ci)) { // si no existe un evento con el mismo nombre
-                if(tipoDep == "DEPendiente") {
-                    anyadirDependiente(ci,nom,e,eventoSup);
+            if(tipoDep == "DEPendiente") {
+                anyadirDependiente(ci,nom,e,eventoSup);
 
-                    if(existeDependiente(nom,ci)) {    // si se ha añadido bien
-                        sal << "INTRODUCIDO: ";
+                if(existeDependiente(nom,ci)) {    // si se ha añadido bien
+                    sal << "INTRODUCIDO: ";
 
-                    } else {
-                        sal << "NO INTRODUCIDO: ";
-                    }
+                } else {
+                    sal << "NO INTRODUCIDO: ";
+                }
 
-                    sal << "[ " << nom << " -de-> " << eventoSup << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
+                sal << "[ " << nom << " -de-> " << eventoSup << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
 
                 } else {                // poner un caso por si no pone ni DEP ni IND ??????????????????????????
                     anyadirIndependiente(ci,nom,e);
@@ -81,20 +81,17 @@ int main() {
                         sal << "NO INTRODUCIDO: ";
                     }
 
-                    sal << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
-                }
-
-            } else {    // si existe ya un evento con el mismo nombre
-                if(tipoDep == "DEPendiente") {
-                    sal << "NO INTRODUCIDO: " << "[ " << nom << " -de-> " << eventoSup << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
-
-                } else {
-                    sal << "NO INTRODUCIDO: " << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
-
-                }
+                sal << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
             }
             
+
+
+
+                
+
             
+
+
 
 
 	    } else if (instruccion == "C") {         
@@ -192,17 +189,71 @@ int main() {
 
 
         } else if (instruccion == "LD") {
-
-            // funciones para salida.txt   
-
-
-
+            getline(ent,nom);
+            sal << "****DEPENDIENTES: " << nom << endl;
+            if (existe(nom,ci)) {
+                string nomAux = nom;
+                obtenerVal(nom,ci,e,error);
+                if (!error) {
+                    desc = descripcion(e);
+                    prio = suPrioridad(e);
+                }
+                if (!error) {obtenerNumDependientes(nom,ci,NumDep,error);}
+                if( existeIndependiente(nom,ci) && !error) {
+                        sal << "[ " << nom << " --- " << NumDep << " ]" << " --- " 
+                        << desc << " --- ( " << prio << " )" << endl;
+                        
+                } else if (!error){
+                        obtenerSupervisor(nom,ci,eventoSup,error);
+                        if(!error) {
+                            sal << "[ " << nom << " -de-> " << eventoSup << " ;;; " << NumDep 
+                            << " ]" << " --- " << desc << " --- ( " << prio << " )" << endl;
+                        }
+                }
+                iniciarIterador(ci);
+                error = false;
+                while (existeSiguiente(ci)) {
+                    if(!error) {siguienteDependiente(ci,esDep,error);}
+                    if (esDep && !error) {
+                        if(!error) {siguienteIdent(ci,nom,error);}
+                        if(!error) {siguienteNumDependientes(ci,NumDep,error);}
+                        if(!error) {siguienteVal(ci,e,error);}
+                        if (!error) {
+                            desc = descripcion(e);
+                            prio = suPrioridad(e);
+                            siguienteSuperior(ci,eventoSup,error);
+                        } if (!error) {
+                            sal << "[ " << nom << " -de-> " << eventoSup << " ;;; " << NumDep 
+                            << " ]" << " --- " << desc << " --- ( " << prio << " )" << endl;
+                        }
+                }
+                sal << "****FINAL dependientes -de-> " << nomAux << endl;
+                }
+            } else {sal << "****DESCONOCIDO: " << endl;}
         } else if (instruccion == "LT") {
 
-            // funciones para salida.txt   
-
-
-
+            sal << "-----LISTADO: " << tamanyo(ci) << endl;
+            iniciarIterador(ci);
+            error = false;
+            while (existeSiguiente(ci)) {
+                if(!error) {siguienteDependiente(ci,esDep,error);}
+                if(!error) {siguienteIdent(ci,nom,error);}
+                if(!error) {siguienteNumDependientes(ci,NumDep,error);}
+                if(!error) {siguienteVal(ci,e,error);
+                    desc = descripcion(e);
+                    prio = suPrioridad(e);
+                }
+                if (esDep && !error) {
+                    siguienteSuperior(ci,eventoSup,error);
+                    sal << "[ " << nom << " -de-> " << eventoSup << " ;;; " << NumDep 
+                    << " ]" << " --- " << desc << " --- ( " << prio << " )" << endl;
+                } else if (!error){
+                    sal << "[ " << nom << " --- " << NumDep << " ]" << " --- " 
+                    << desc << " --- ( " << prio << " )" << endl;
+                }
+                avanza(ci,error);
+            }
+            sal << "-----" << endl;
         } 
     }
 

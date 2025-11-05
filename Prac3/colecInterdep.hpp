@@ -14,7 +14,10 @@
  *  
  * igual: ident s1, ident s2  booleano {devuelve verdad si y solo si s1 es igual que s2.} 
  * anterior: ident s1, ident s2  booleano {devuelve verdad si y solo si s1 es anterior a s2.} 
- * género colecInterdep {Los valores del TAD representan colecciones de elementos formados como 
+ * 
+ * Género colecInterdep 
+ * 
+ * {Los valores del TAD representan colecciones de elementos formados como 
  * tuplas de la forma (ident, val, -, NumDepend) o bien (ident, val, identSup, NumDepend). 
  * A los elementos con forma (ident, val, -, NumDepend) los llamaremos en general 
  * ‘elementos independientes’, mientras que a los elementos con forma 
