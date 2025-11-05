@@ -111,16 +111,16 @@ int main() {
                 actualizarVal(ci,nom,e,error); 
                 
                 if(!error) { // si se ha podido actualizar el evento 
-                    if(existeDependiente(nom,ci)) {  // si es dependiente
-                        obtenerNumDependientes(nom,ci,NumDep,error);
-                        if(!error) {
+                    obtenerNumDependientes(nom,ci,NumDep,error);
+                    if(!error) { // ha obtenido NumDep
+                        if(existeDependiente(nom,ci)) {  // si es dependiente
                             sal << "CAMBIADO: [ " << nom << " -de-> " << eventoSup << " ;;; " << NumDep << " ] --- " << desc << " --- ( " << prio << " )" << endl;
-                        } else {
-                            sal <<  "NO CAMBIADO: " << nom << endl;
+                        
+                        } else { // si es independiente
+                            sal << "CAMBIADO: [ " << nom << " --- " << NumDep << " ] --- " << desc << " --- ( " << prio << " )" << endl;
                         }
-
-                    } else {
-
+                    } else { // si NO ha obtenido NumDep
+                        sal <<  "NO CAMBIADO: " << nom << endl;
                     }
 
                 } else {    // si NO se ha podido actualizar el evento
