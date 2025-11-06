@@ -8,16 +8,14 @@
 /* ----------------------------------------------------------------
  * PREDECLARACION DEL TAD GENERICO colecInterdep (inicio INTERFAZ)
  * ----------------------------------------------------------------
- * operación {Se requiere que el género ident tenga definidas las siguientes operaciones.                 
+ * operación {Se requiere que el género ident tenga definidas las siguientes operaciones.                 
  * Las operaciones igual y anterior definen una relación de orden total (i.e., permiten 
  * organizar los datos de la colección en forma de secuencia ordenada)}
- *  
+ *  
  * igual: ident s1, ident s2  booleano {devuelve verdad si y solo si s1 es igual que s2.} 
  * anterior: ident s1, ident s2  booleano {devuelve verdad si y solo si s1 es anterior a s2.} 
- * 
- * Género colecInterdep 
- * 
- * {Los valores del TAD representan colecciones de elementos formados como 
+ * * Género colecInterdep 
+ * * {Los valores del TAD representan colecciones de elementos formados como 
  * tuplas de la forma (ident, val, -, NumDepend) o bien (ident, val, identSup, NumDepend). 
  * A los elementos con forma (ident, val, -, NumDepend) los llamaremos en general 
  * ‘elementos independientes’, mientras que a los elementos con forma 
@@ -28,7 +26,7 @@
  * Ningún elemento de la colección podrá ser directamente dependiente de sí mismo, 
  * y todo elemento dependiente debe serlo de otro elemento que exista en la colección 
  * (que a su vez puede ser un elemento independiente o dependiente). En cada elemento, 
- * la información NumDepend de su tupla representará el número total de elementos     
+ * la información NumDepend de su tupla representará el número total de elementos     
  * en la colección que son directamente dependientes del elemento con identificador ident, 
  * y que será 0 si ningún elemento de la colección depende de dicho elemento.}
  */
@@ -99,16 +97,18 @@ void anyadirDependiente(colecInterdep<ident,val> &ci, ident id, val v, ident idS
 
 /*
  * hacerDependiente: colecInterdep c, ident id, ident super -> colecInterdep
- * {Si no igual(id,super) y existe?(super,c) y existeDependiente?(id,c), ...
- * Si no igual(id,super) y existe?(super,c) y existeIndependiente?(id,c), ...
- * En cualquier otro caso, devuelve una colección igual a c.}
+ * {Si no igual(id,super), existe?(id,c) y existe?(super,c): 
+ * si id era independiente, lo convierte en dependiente de super e incrementa el NumDepend de super. 
+ * Si id ya era dependiente de supAnt, decrementa el NumDepend de supAnt, lo convierte en dependiente de super e incrementa el NumDepend de super. 
+ * En cualquier otro caso, devuelve c sin modificar.}
  */
 template<typename ident,typename val>
 void hacerDependiente(colecInterdep<ident,val> &ci, ident id, ident idSup);
 
 /*
  * hacerIndependiente: colecInterdep c, ident id -> colecInterdep
- * {Si existeDependiente?(id,c), ...
+ * {Si existeDependiente?(id,c, supAnt), devuelve una colección igual a c tras decrementar en 1 el NumDepend de supAnt 
+ * y convertir id en un elemento independiente (id, v, -, NumDepend). 
  * En cualquier otro caso, devuelve una colección igual a c.}
  */
 template<typename ident,typename val>
@@ -116,43 +116,27 @@ void hacerIndependiente(colecInterdep<ident,val> &ci, ident id);
 
 /*
  * parcial actualizarVal: colecInterdep c, ident id, val nuevo -> colecInterdep
- * {Si existeIndependiente?(id,c), ... Si existeDependiente?(id,c), ...
+ * {Si existe?(id,c), devuelve una colección igual a c tras actualizar el valor 'val' del elemento 'id' a 'nuevo'.
  * Parcial: la operación no está definida si no existe?(id,c).}
  */
 template<typename ident,typename val>
 void actualizarVal(colecInterdep<ident,val> &ci, ident id, val v, bool &error);
 
 /*
- * parcial obtenerVal: ident id, colecInterdep c -> val
- * {Si en c hay algún elemento con ident igual a id, ... devuelve el dato v ...
+ * parcial obtenerDatos: colecInterdep c, ident id -> (val, ident, natural, booleano)
+ * {Si existe?(id,c), devuelve en 'v', 'idSup', 'NumDep' y 'esDep' los datos asociados al elemento 'id'. 
+ * Si 'id' es independiente, 'esDep' será falso.
  * Parcial: la operación no está definida si no existe?(id,c).}
  */
 template<typename ident,typename val>
-void obtenerVal(ident id, colecInterdep<ident,val> ci, val &v, bool &error);
-
-/*
- * parcial obtenerSupervisor: ident id, colecInterdep c -> ident
- * {Si existeDependiente?(id,c), ... devuelve el dato sup ...
- * Parcial: la operación no está definida si no existeDependiente?(id,c).}
- */
-template<typename ident,typename val>
-void obtenerSupervisor(ident id, colecInterdep<ident,val> ci, ident &idSup, bool &error);
-
-/*
- * parcial obtenerNúmDependientes: ident id, colecInterdep c -> natural
- * {Si existe?(id,c), ... devuelve el dato NumDep ...
- * Parcial: la operación no está definida si no existe?(id,c).}
- */
-template<typename ident,typename val>
-void obtenerNumDependientes(ident id, colecInterdep<ident,val> ci, unsigned &NumDep, bool &error);
+void obtenerDatos(ident id, colecInterdep<ident,val> ci, val &v, ident &idSup,unsigned &NumDep,bool &esDep, bool &error);
 
 /*
  * borrar: ident id, colecInterdep c -> colecInterdep
- * {Si existeDependiente?(id,c), ... y obtenerNúmDependientes(id,c)=0,
- * devuelve una colección igual a la resultante de: decrementar en 1 el número de elementos
- * dependientes del elemento con identificador sup, y eliminar el elemento ...
- * Si existeIndependiente?(id,c), ... y obtenerNúmDependientes(id,c)=0,
- * devuelve una colección igual a la resultante de eliminar el elemento ...
+ * {Si existeDependiente?(id,c, supAnt) y obtenerNúmDependientes(id,c)=0,
+ * devuelve una colección igual a la resultante de: decrementar en 1 el NumDepend de supAnt y eliminar el elemento id.
+ * Si existeIndependiente?(id,c) y obtenerNúmDependientes(id,c)=0,
+ * devuelve una colección igual a la resultante de eliminar el elemento id.
  * En cualquier otro caso, devuelve una colección igual a c.}
  */
 template<typename ident,typename val>
@@ -164,56 +148,56 @@ void borrar(ident id, colecInterdep<ident,val> &ci);
 
 /*
  * iniciarIterador: colecInterdep c -> colecInterdep
- * {Inicializa el iterador para recorrer los elementos de la colección c...}
+ * {Inicializa el iterador para recorrer los elementos de la colección c en el orden definido por los 'ident'. 
+ * El siguiente elemento a visitar será el primero (el de menor 'ident').}
  */
 template<typename ident,typename val>
 void iniciarIterador(colecInterdep<ident,val>& ci);
 
 /**
  * existeSiguiente?: colecInterdep c -> booleano
- * {Devuelve verdad si queda algún elemento por visitar con el iterador...}
+ * {Devuelve verdad si queda algún elemento por visitar con el iterador, falso en caso contrario.}
  */
 template<typename ident,typename val>
 bool existeSiguiente(colecInterdep<ident,val> ci);
 
 /**
  * parcial siguienteIdent: colecInterdep c -> ident
- * {Devuelve el ident del siguiente elemento a visitar ...
- * Parcial: la operación no está definida si no quedan elementos por visitar...}
+ * {Devuelve el ident del siguiente elemento a visitar.
+ * Parcial: la operación no está definida si no quedan elementos por visitar (si existeSiguiente?(c) es falso).}
  */
 template<typename ident,typename val>
 void siguienteIdent(colecInterdep<ident,val> ci, ident &id, bool &error);
 
 /**
  * parcial siguienteVal: colecInterdep c -> val
- * {Devuelve el val del siguiente elemento a visitar ...
- * Parcial: la operación no está definida si no quedan elementos por visitar...}
+ * {Devuelve el val del siguiente elemento a visitar.
+ * Parcial: la operación no está definida si no quedan elementos por visitar (si existeSiguiente?(c) es falso).}
  */
 template<typename ident,typename val>
 void siguienteVal(colecInterdep<ident,val> ci, val &v, bool &error);
 
 /**
  * parcial siguienteDependiente?: colecInterdep c -> booleano
- * {Si el siguiente elemento a visitar ... es de la forma (ident, val, -, numDep) devuelve falso,
- * pero si es de la forma (ident, val, identSup, numDep) devuelve verdad.
- * Parcial: la operación no está definida si no quedan elementos por visitar...}
+ * {Si el siguiente elemento a visitar es independiente devuelve falso; si es dependiente devuelve verdad.
+ * Parcial: la operación no está definida si no quedan elementos por visitar (si existeSiguiente?(c) es falso).}
  */
 template<typename ident,typename val>
 void siguienteDependiente(colecInterdep<ident,val> ci, bool &esDep, bool &error);
 
 /**
  * parcial siguienteSuperior: colecInterdep c -> ident
- * {Si el siguiente elemento a visitar ... es de la forma (ident, val, identSup, numDep), devuelve su identSup.
- * Parcial: la operación no está definida si no quedan elementos por visitar ...,
- * o bien si ... no es verdad siguienteDependiente?(c).}
+ * {Devuelve el identSup del siguiente elemento a visitar.
+ * Parcial: la operación no está definida si no quedan elementos por visitar (si existeSiguiente?(c) es falso) 
+ * o si el siguiente elemento es independiente (si siguienteDependiente?(c) es falso).}
  */
 template<typename ident,typename val>
 void siguienteSuperior(colecInterdep<ident,val> ci, ident &idSup, bool &error);
 
 /**
  * parcial siguienteNúmDependientes: colecInterdep c -> natural
- * {Devuelve el NumDep del siguiente elemento a visitar ...
- * Parcial: la operación no está definida si no quedan elementos por visitar...}
+ * {Devuelve el NumDep (número de dependientes) del siguiente elemento a visitar.
+ * Parcial: la operación no está definida si no quedan elementos por visitar (si existeSiguiente?(c) es falso).}
  */
 template<typename ident,typename val>
 void siguienteNumDependientes(colecInterdep<ident,val> ci, unsigned &NumDep, bool &error);
@@ -221,7 +205,7 @@ void siguienteNumDependientes(colecInterdep<ident,val> ci, unsigned &NumDep, boo
 /**
  * parcial avanza: colecInterdep c -> colecInterdep
  * {Avanza el iterador de la colección c para que se pueda visitar otro elemento.
- * Parcial: la operación no está definida si no quedan elementos por visitar...}
+ * Parcial: la operación no está definida si no quedan elementos por visitar (si existeSiguiente?(c) es falso).}
  */
 template<typename ident,typename val>
 void avanza(colecInterdep<ident,val>& ci, bool &error);
@@ -244,9 +228,7 @@ struct colecInterdep{
     friend void hacerDependiente<ident,val>(colecInterdep<ident,val> &ci, ident id, ident idSup);
     friend void hacerIndependiente<ident,val>(colecInterdep<ident,val> &ci, ident id);
     friend void actualizarVal<ident,val>(colecInterdep<ident,val> &ci, ident id, val v, bool &error);
-    friend void obtenerVal<ident,val>(ident id,colecInterdep<ident,val> ci, val &v, bool &error);
-    friend void obtenerSupervisor<ident,val>(ident id, colecInterdep<ident,val> ci, ident &idSup, bool &error);
-    friend void obtenerNumDependientes<ident,val>(ident id, colecInterdep<ident,val> ci, unsigned &NumDep, bool &error);
+    friend void obtenerDatos<ident,val>(ident id, colecInterdep<ident,val> ci, val &v, ident &idSup,unsigned &NumDep,bool &esDep, bool &error);
     friend void borrar<ident,val>(ident id, colecInterdep<ident,val>& ci);
 
     /*---------------------
@@ -561,39 +543,14 @@ void actualizarVal(colecInterdep<ident,val> &ci, ident id, val v, bool &error) {
 }
 
 /*
-* Pre: 'id' debe existir en 'ci' (operación parcial).
-* Post: Devuelve en 'v' el valor del elemento 'id'. 'error' es 'false'.
-* Si no existe 'id', 'error' es 'true'.
+* Pre: 'id' debe existir en 'ci' (operación parcial). En caso contrario 'error' = true y 'esDep' indefinido.
+* Post: Si id es independiente, de la forma (id,val,-,num), 'v' pasa a valer 'val', 
+* 'NumDep' pasa a valer 'num' y 'esDep' = false. En caso dependiete (id, v, super, NumDep), además de lo anterior,
+* 'idSup' pasa 'super' y 'esDep' = true.
 * Coste: O(N) (N = numElementos).
 */
 template<typename ident,typename val>
-void obtenerVal(ident id, colecInterdep<ident,val> ci,val &v, bool &error) {
-    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección
-        *nAux = ci.inicio;
-    
-    // 1. Buscar el nodo 
-    while (nAux != nullptr && nAux->id < id) {
-        nAux = nAux->siguiente;
-    }
-    
-    // 2. Comprobar si se ha encontrado
-    if (nAux == nullptr || nAux->id != id) {
-        error = true;
-    } else {
-        // 3. Obtener valor
-        error = false;
-        v = nAux->v;
-    }
-}
-
-/*
-* Pre: 'id' debe existir y ser dependiente (operación parcial).
-* Post: Devuelve en 'idSup' el 'id' del supervisor de 'id'. 'error' es 'false'.
-* Si no existe 'id' o es independiente, 'error' es 'true'.
-* Coste: O(N) (N = numElementos).
-*/
-template<typename ident,typename val>
-void obtenerSupervisor(ident id, colecInterdep<ident,val> ci, ident &idSup, bool &error) {
+void obtenerDatos(ident id, colecInterdep<ident,val> ci, val &v, ident &idSup,unsigned &NumDep,bool &esDep, bool &error) {
     typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección
         *nAux = ci.inicio;
 
@@ -603,38 +560,17 @@ void obtenerSupervisor(ident id, colecInterdep<ident,val> ci, ident &idSup, bool
     }
     
     // 2. Comprobar precondiciones: que exista Y que sea dependiente
-    if (nAux == nullptr || nAux->id != id || (nAux->id == id && nAux->NodoDep == nullptr)) {
+    if (nAux == nullptr || nAux->id != id ) {
         error = true;
     } else {
-        // 3. Obtener id del supervisor
-        error = false;
-        idSup = nAux->NodoDep->id;
-    }
-}
-
-/*
-* Pre: 'id' debe existir en 'ci' (operación parcial).
-* Post: Devuelve en 'NumDep' el nº de dependientes de 'id'. 'error' es 'false'.
-* Si no existe 'id', 'error' es 'true'.
-* Coste: O(N) (N = numElementos).
-*/
-template<typename ident,typename val>
-void obtenerNumDependientes(ident id, colecInterdep<ident,val> ci, unsigned &NumDep, bool &error) {
-    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección
-        *nAux = ci.inicio;
-    
-    // 1. Buscar el nodo
-    while (nAux != nullptr && nAux->id < id) {
-        nAux = nAux->siguiente;
-    }
-    
-    // 2. Comprobar si se ha encontrado
-    if (nAux == nullptr || nAux->id != id) {
-        error = true;
-    } else {
-        // 3. Obtener el contador
-        error = false;    
+        // 3. Obtener Numdependientes, valor e id del supervisor si tiene
         NumDep = nAux->NumDepend;
+        v = nAux->v;
+        error = false;
+        if (nAux->NodoDep != nullptr) {
+            idSup = nAux->NodoDep->id;
+            esDep = true;
+        } else { esDep = false;}
     }
 }
 
