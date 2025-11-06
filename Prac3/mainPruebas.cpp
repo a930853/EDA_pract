@@ -128,13 +128,13 @@ void instruccionI(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
 }
 
 void instruccionE(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
-    if(existe(nom,ci)) {
+    if(existe(nom,ci)) {    // si existe el evento
         if(existeDependiente(nom,ci)) {
             sal << "DEPendiente: ";
         } else {
             sal << "INDEPendiente: ";
         }
-    } else {
+    } else {    // si no existe el evento
         sal << "DESCONOCIDO: ";
     }
     sal << nom << endl;
@@ -153,9 +153,9 @@ void instruccionD(colecInterdep<string,evento> &ci, ofstream &sal, string nom, s
 void instruccionB(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
     unsigned tamPrev = tamanyo(ci);
     borrar(nom,ci);
-    if(tamPrev > tamanyo(ci)){
+    if(tamPrev > tamanyo(ci)){  // se ha borrado el evento de la colección
         sal << "BORRADO: " << nom << endl;
-    } else {sal << "NO BORRADO: " << nom << endl;}
+    } else {sal << "NO BORRADO: " << nom << endl;}  // no se ha borrado el evento de la colección (probablemente porque no exista)
 }
 
 void instruccionLD(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
@@ -247,13 +247,13 @@ int main() {
 
     ifstream ent; 
     ofstream sal;
-    ent.open("entradaPrueba.txt"); // cambiar .txt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ent.open("entrada.txt"); // abrimos el fichero de entrada
     if(!ent.is_open()) {
         cerr << "No se pudo abrir el archivo entrada." << endl;
         return 1;
     }
 
-    sal.open("salidaPrueba.txt"); // cambiar .txt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    sal.open("salida.txt"); // abrimos el fichero de salida
     if(!sal.is_open()) {
         cerr << "No se pudo abrir el archivo salida." << endl;
         return 1;

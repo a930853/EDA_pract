@@ -36,24 +36,23 @@ NO BORRADO: evento_1
 BORRADO: evento_2
 BORRADO: evento_1
 ****DEPENDIENTES: evento_3
-[ evento_3 --- 1 ] --- Evento 3 --- ( 3 )
-[ evento_4 -de-> evento_3 ;;; 0 ] --- Evento 4 --- ( 4 )
+[ evento_3 --- 1 ] --- Evento 3 --- ( 3 ) ****
+[1 -> evento_4 -de-> evento_3 ;;; 0 ] --- Evento 4 --- ( 4 ) ;;;;
 ****FINAL dependientes -de-> evento_3
 BORRADO: evento_4
 ****DEPENDIENTES: evento_3
-[ evento_3 --- 0 ] --- Evento 3 --- ( 3 )
+[ evento_3 --- 0 ] --- Evento 3 --- ( 3 ) ****
 ****FINAL dependientes -de-> evento_3
 ****DEPENDIENTES: evento_5
-****DESCONOCIDO: 
+****DESCONOCIDO 
 INTRODUCIDO: [ evento_6 ] --- Evento 6 --- ( 2 )
 INTRODUCIDO: [ evento_7 -de-> evento_6 ] --- Evento 7 --- ( 4 )
 INTENTANDO hacer depend.: evento_3 -de-> evento_7
 INTRODUCIDO: [ evento_4 -de-> evento_7 ] --- Evento 4 --- ( 1 )
 ****DEPENDIENTES: evento_7
-[ evento_7 -de-> evento_6 ;;; 2 ] --- Evento 7 --- ( 4 )
-[ evento_3 -de-> evento_7 ;;; 0 ] --- Evento 3 --- ( 3 )
-[ evento_4 -de-> evento_7 ;;; 0 ] --- Evento 4 --- ( 1 )
-[ evento_7 -de-> evento_6 ;;; 2 ] --- Evento 7 --- ( 4 )
+[ evento_7 -de-> evento_6 ;;; 2 ] --- Evento 7 --- ( 4 ) ****
+[1 -> evento_3 -de-> evento_7 ;;; 0 ] --- Evento 3 --- ( 3 ) ;;;;
+[2 -> evento_4 -de-> evento_7 ;;; 0 ] --- Evento 4 --- ( 1 ) ;;;;
 ****FINAL dependientes -de-> evento_7
 -----LISTADO: 4
 [ evento_3 -de-> evento_7 ;;; 0 ] --- Evento 3 --- ( 3 )
