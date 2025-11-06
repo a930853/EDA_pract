@@ -1,116 +1,136 @@
 LT
-C 
-apertura_2025_10_6
-apertura del edificio 2025-10-7
+A
+evento_1
+Evento 1
+2
+INDependiente
+-.-.-.-.-
+A
+evento_2
+Evento 2
+4
+DEPendiente
+evento_1
+LT
+A
+evento_1
+Evento 1
+2
+DEPendiente
+evento_1
+A
+evento_3
+Evento 3
 1
-A
-cierre_2025_10_6
-Cierre del edificio
-2
-INDependiente
--.-.-.-.-
-D
-cierre_2025_10_6
-cierre_2025_10_6
-A
-ON_luces Z008
-Encendidas luces008, deteccion sensor presencia
-2
 DEPendiente
-presencia_S008
-LD
-presencia_S008
-LT
+evento_4
 A
-Validacion_P001_exterior
-Validacion acceso en puerta P001, desde exterior
-3
-INDependiente
--.-.-.-.-
-A
-apertura_P001
-Abierta puerta P001
-3
-DEPendiente
-Validacion_P001_exterior
-A
-presencia_S008
-Deteccion presencia, sensor S008
-3
-INDependiente
--.-.-.-.-
-A
-ON_luces Z008
-Encendidas luces008, deteccion sensor presencia
-4
-DEPendiente
-presencia_S008
-A
-OFF_luces Z008
-Apagadas luces zona 008, por expiracion tiempo
-2
-DEPendiente
-ON_luces Z008
-LT
-O
-presencia_S008
-O
-OFF_luces Z008
-O
-apertura_2025_10_7
-E
-presencia_S008
-E
-OFF_luces Z008
-E
-apertura_2025_10_7
-LD
-Validacion_P001_exterior
-C 
-apertura_P001
-Abierta puerta P001, previa validacion
-2
-O
-apertura_P001
-C 
-presencia_S008
-presencia, sensor S008
-4
-LD
-presencia_S008
-LT
-D
-OFF_luces Z008
-presencia_S008
-LD
-presencia_S008
-I
-Validacion_P001_exterior
-I
-apertura_2025_10_6
-I
-apertura_P001
-LD
-Validacion_P001_exterior
-C 
-apertura_P001
-Abierta puerta P001 sin validacion acceso
+evento_4
+Evento 4
 5
+DEPendiente
+evento_4
+C
+evento_1
+Evento 1, después de un tiempo
+2
+C
+evento_2
+Evento 2
+3
+C
+evento_3
+Evento 3
+1
+O
+evento_1
+O
+evento_2
+O
+evento_3
+E
+evento_1
+E
+evento_2
+E
+evento_3
+I
+evento_1
+I
+evento_2
+I
+evento_3
 D
-presencia_S008
-apertura_P001
+evento_2
+evento_1
 D
-cierre_2025_10_6
-apertura_2025_10_6
-LT
+evento_1
+evento_1
+D
+evento_1
+evento_2
+D
+evento_1
+evento_4
+O
+evento_1
+I
+evento_1
+D
+evento_3
+evento_1
+D
+evento_3
+evento_4
+A
+evento_3
+Evento 3
+3
+INDependiente
+-.-.-.-.-
+A
+evento_4
+Evento 4
+4
+DEPendiente
+evento_3
 B
-apertura_2025_10_7
+evento_5
 B
-OFF_luces Z008
+evento_1
 B
-presencia_S008
+evento_2
+B
+evento_1
 LD
-presencia_S008
+evento_3
+B
+evento_4
 LD
-apertura_P001
+evento_3
+LD
+evento_5
+A
+evento_6
+Evento 6
+2
+INDependiente
+-.-.-.-.-
+A
+evento_7
+Evento 7
+4
+DEPendiente
+evento_6
+D
+evento_3
+evento_7
+A
+evento_4
+Evento 4
+1
+DEPendiente
+evento_7
+LD
+evento_7
 LT
