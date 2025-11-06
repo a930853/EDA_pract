@@ -1,64 +1,64 @@
 -----LISTADO: 0
 -----
-INTRODUCIDO: [ evento_1 ] --- Evento 1 --- ( 2 )
-INTRODUCIDO: [ evento_2 -de-> evento_1 ] --- Evento 2 --- ( 4 )
+INTRODUCIDO: [ madrugar ] --- Madrugar --- ( 2 )
+INTRODUCIDO: [ desayunar -de-> madrugar ] --- Desayunar --- ( 4 )
 -----LISTADO: 2
-[ evento_1 --- 1 ] --- Evento 1 --- ( 2 )
-[ evento_2 -de-> evento_1 ;;; 0 ] --- Evento 2 --- ( 4 )
+[ desayunar -de-> madrugar ;;; 0 ] --- Desayunar --- ( 4 )
+[ madrugar --- 1 ] --- Madrugar --- ( 2 )
 -----
-NO INTRODUCIDO: [ evento_1 -de-> evento_2 ] --- Evento 1 --- ( 2 )
-NO INTRODUCIDO: [ evento_1 -de-> evento_1 ] --- Evento 1 --- ( 2 )
-NO INTRODUCIDO: [ evento_3 -de-> evento_4 ] --- Evento 3 --- ( 1 )
-NO INTRODUCIDO: [ evento_4 -de-> evento_4 ] --- Evento 4 --- ( 5 )
-CAMBIADO: [ evento_1 --- 1 ] --- Evento 1, después de un tiempo --- ( 2 )
-CAMBIADO: [ evento_2 -de-> evento_1 ;;; 0 ] --- Evento 2 --- ( 3 )
-NO CAMBIADO: evento_3
-LOCALIZADO: [ evento_1 --- 1 ] --- Evento 1, después de un tiempo --- ( 2 )
-LOCALIZADO: [ evento_2 -de-> evento_1 ;;; 0 ] --- Evento 2 --- ( 3 )
-NO LOCALIZADO: evento_3
-INDEPendiente: evento_1
-DEPendiente: evento_2
-DESCONOCIDO: evento_3
-YA ERA INDepend.: evento_1
-INDEPENDIZADO: evento_2
-NO INDEPENDIZADO: evento_3
-INTENTANDO hacer depend.: evento_2 -de-> evento_1
-INTENTANDO hacer depend.: evento_1 -de-> evento_1
-LOCALIZADO: [ evento_1 --- 1 ] --- Evento 1, después de un tiempo --- ( 2 )
-INTENTANDO hacer depend.: evento_1 -de-> evento_2
-LOCALIZADO: [ evento_1 -de-> evento_2 ;;; 1 ] --- Evento 1, después de un tiempo --- ( 2 )
-INDEPENDIZADO: evento_1
-IMPOSIBLE hacer depend.: evento_1 -de-> evento_4
-IMPOSIBLE hacer depend.: evento_3 -de-> evento_1
-IMPOSIBLE hacer depend.: evento_3 -de-> evento_4
-INTRODUCIDO: [ evento_3 ] --- Evento 3 --- ( 3 )
-INTRODUCIDO: [ evento_4 -de-> evento_3 ] --- Evento 4 --- ( 4 )
-NO BORRADO: evento_5
-NO BORRADO: evento_1
-BORRADO: evento_2
-BORRADO: evento_1
-****DEPENDIENTES: evento_3
-[ evento_3 --- 1 ] --- Evento 3 --- ( 3 ) ****
-[1 -> evento_4 -de-> evento_3 ;;; 0 ] --- Evento 4 --- ( 4 ) ;;;;
-****FINAL dependientes -de-> evento_3
-BORRADO: evento_4
-****DEPENDIENTES: evento_3
-[ evento_3 --- 0 ] --- Evento 3 --- ( 3 ) ****
-****FINAL dependientes -de-> evento_3
-****DEPENDIENTES: evento_5
+NO INTRODUCIDO: [ madrugar -de-> desayunar ] --- Madrugar --- ( 2 )
+NO INTRODUCIDO: [ madrugar -de-> madrugar ] --- Madrugar --- ( 2 )
+NO INTRODUCIDO: [ gimnasio -de-> entrenar ] --- Ir al gimnasio --- ( 1 )
+NO INTRODUCIDO: [ entrenar -de-> entrenar ] --- Entrenar duro --- ( 5 )
+CAMBIADO: [ madrugar --- 1 ] --- Madrugar por la mañana --- ( 2 )
+CAMBIADO: [ desayunar -de-> madrugar ;;; 0 ] --- Desayunar --- ( 3 )
+NO CAMBIADO: gimnasio
+LOCALIZADO: [ madrugar --- 1 ] --- Madrugar por la mañana --- ( 2 )
+LOCALIZADO: [ desayunar -de-> madrugar ;;; 0 ] --- Desayunar --- ( 3 )
+NO LOCALIZADO: gimnasio
+INDEPendiente: madrugar
+DEPendiente: desayunar
+DESCONOCIDO: gimnasio
+YA ERA INDepend.: madrugar
+INDEPENDIZADO: desayunar
+NO INDEPENDIZADO: gimnasio
+INTENTANDO hacer depend.: desayunar -de-> madrugar
+INTENTANDO hacer depend.: madrugar -de-> madrugar
+LOCALIZADO: [ madrugar --- 1 ] --- Madrugar por la mañana --- ( 2 )
+INTENTANDO hacer depend.: madrugar -de-> desayunar
+LOCALIZADO: [ madrugar -de-> desayunar ;;; 1 ] --- Madrugar por la mañana --- ( 2 )
+INDEPENDIZADO: madrugar
+IMPOSIBLE hacer depend.: madrugar -de-> entrenar
+IMPOSIBLE hacer depend.: gimnasio -de-> madrugar
+IMPOSIBLE hacer depend.: gimnasio -de-> entrenar
+INTRODUCIDO: [ gimnasio ] --- Ir al gimnasio --- ( 3 )
+INTRODUCIDO: [ entrenar -de-> gimnasio ] --- Entrenar duro --- ( 4 )
+NO BORRADO: comer
+NO BORRADO: madrugar
+BORRADO: desayunar
+BORRADO: madrugar
+****DEPENDIENTES: gimnasio
+[ gimnasio --- 1 ] --- Ir al gimnasio --- ( 3 ) ****
+[1 -> entrenar -de-> gimnasio ;;; 0 ] --- Entrenar duro --- ( 4 ) ;;;;
+****FINAL dependientes -de-> gimnasio
+BORRADO: entrenar
+****DEPENDIENTES: gimnasio
+[ gimnasio --- 0 ] --- Ir al gimnasio --- ( 3 ) ****
+****FINAL dependientes -de-> gimnasio
+****DEPENDIENTES: comer
 ****DESCONOCIDO 
-INTRODUCIDO: [ evento_6 ] --- Evento 6 --- ( 2 )
-INTRODUCIDO: [ evento_7 -de-> evento_6 ] --- Evento 7 --- ( 4 )
-INTENTANDO hacer depend.: evento_3 -de-> evento_7
-INTRODUCIDO: [ evento_4 -de-> evento_7 ] --- Evento 4 --- ( 1 )
-****DEPENDIENTES: evento_7
-[ evento_7 -de-> evento_6 ;;; 2 ] --- Evento 7 --- ( 4 ) ****
-[1 -> evento_3 -de-> evento_7 ;;; 0 ] --- Evento 3 --- ( 3 ) ;;;;
-[2 -> evento_4 -de-> evento_7 ;;; 0 ] --- Evento 4 --- ( 1 ) ;;;;
-****FINAL dependientes -de-> evento_7
+INTRODUCIDO: [ universidad ] --- Ir a la universidad --- ( 2 )
+INTRODUCIDO: [ estudiar -de-> universidad ] --- Estudiar en la biblioteca --- ( 4 )
+INTENTANDO hacer depend.: gimnasio -de-> estudiar
+INTRODUCIDO: [ entrenar -de-> estudiar ] --- Entrenar duro --- ( 1 )
+****DEPENDIENTES: estudiar
+[ estudiar -de-> universidad ;;; 2 ] --- Estudiar en la biblioteca --- ( 4 ) ****
+[1 -> entrenar -de-> estudiar ;;; 0 ] --- Entrenar duro --- ( 1 ) ;;;;
+[2 -> gimnasio -de-> estudiar ;;; 0 ] --- Ir al gimnasio --- ( 3 ) ;;;;
+****FINAL dependientes -de-> estudiar
 -----LISTADO: 4
-[ evento_3 -de-> evento_7 ;;; 0 ] --- Evento 3 --- ( 3 )
-[ evento_4 -de-> evento_7 ;;; 0 ] --- Evento 4 --- ( 1 )
-[ evento_6 --- 1 ] --- Evento 6 --- ( 2 )
-[ evento_7 -de-> evento_6 ;;; 2 ] --- Evento 7 --- ( 4 )
+[ entrenar -de-> estudiar ;;; 0 ] --- Entrenar duro --- ( 1 )
+[ estudiar -de-> universidad ;;; 2 ] --- Estudiar en la biblioteca --- ( 4 )
+[ gimnasio -de-> estudiar ;;; 0 ] --- Ir al gimnasio --- ( 3 )
+[ universidad --- 1 ] --- Ir a la universidad --- ( 2 )
 -----

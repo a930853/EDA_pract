@@ -1,144 +1,144 @@
 LT
 A
-evento_1
-Evento 1
+madrugar
+Madrugar
 2
 INDependiente
 -.-.-.-.-
 A
-evento_2
-Evento 2
+desayunar
+Desayunar
 4
 DEPendiente
-evento_1
+madrugar
 LT
 A
-evento_1
-Evento 1
+madrugar
+Madrugar
 2
 DEPendiente
-evento_2
+desayunar
 A
-evento_1
-Evento 1
+madrugar
+Madrugar
 2
 DEPendiente
-evento_1
+madrugar
 A
-evento_3
-Evento 3
+gimnasio
+Ir al gimnasio
 1
 DEPendiente
-evento_4
+entrenar
 A
-evento_4
-Evento 4
+entrenar
+Entrenar duro
 5
 DEPendiente
-evento_4
+entrenar
 C
-evento_1
-Evento 1, después de un tiempo
+madrugar
+Madrugar por la mañana
 2
 C
-evento_2
-Evento 2
+desayunar
+Desayunar
 3
 C
-evento_3
-Evento 3
+gimnasio
+Ir al gimnasio
 1
 O
-evento_1
+madrugar
 O
-evento_2
+desayunar
 O
-evento_3
+gimnasio
 E
-evento_1
+madrugar
 E
-evento_2
+desayunar
 E
-evento_3
+gimnasio
 I
-evento_1
+madrugar
 I
-evento_2
+desayunar
 I
-evento_3
+gimnasio
 D
-evento_2
-evento_1
+desayunar
+madrugar
 D
-evento_1
-evento_1
+madrugar
+madrugar
 O
-evento_1
+madrugar
 D
-evento_1
-evento_2
+madrugar
+desayunar
 O
-evento_1
+madrugar
 I
-evento_1
+madrugar
 D
-evento_1
-evento_4
+madrugar
+entrenar
 D
-evento_3
-evento_1
+gimnasio
+madrugar
 D
-evento_3
-evento_4
+gimnasio
+entrenar
 A
-evento_3
-Evento 3
+gimnasio
+Ir al gimnasio
 3
 INDependiente
 -.-.-.-.-
 A
-evento_4
-Evento 4
+entrenar
+Entrenar duro
 4
 DEPendiente
-evento_3
+gimnasio
 B
-evento_5
+comer
 B
-evento_1
+madrugar
 B
-evento_2
+desayunar
 B
-evento_1
+madrugar
 LD
-evento_3
+gimnasio
 B
-evento_4
+entrenar
 LD
-evento_3
+gimnasio
 LD
-evento_5
+comer
 A
-evento_6
-Evento 6
+universidad
+Ir a la universidad
 2
 INDependiente
 -.-.-.-.-
 A
-evento_7
-Evento 7
+estudiar
+Estudiar en la biblioteca
 4
 DEPendiente
-evento_6
+universidad
 D
-evento_3
-evento_7
+gimnasio
+estudiar
 A
-evento_4
-Evento 4
+entrenar
+Entrenar duro
 1
 DEPendiente
-evento_7
+estudiar
 LD
-evento_7
+estudiar
 LT
