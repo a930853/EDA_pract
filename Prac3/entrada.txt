@@ -17,6 +17,12 @@ evento_1
 Evento 1
 2
 DEPendiente
+evento_2
+A
+evento_1
+Evento 1
+2
+DEPendiente
 evento_1
 A
 evento_3
@@ -66,16 +72,18 @@ evento_1
 D
 evento_1
 evento_1
+O
+evento_1
 D
 evento_1
 evento_2
-D
-evento_1
-evento_4
 O
 evento_1
 I
 evento_1
+D
+evento_1
+evento_4
 D
 evento_3
 evento_1

@@ -6,6 +6,7 @@ INTRODUCIDO: [ evento_2 -de-> evento_1 ] --- Evento 2 --- ( 4 )
 [ evento_1 --- 1 ] --- Evento 1 --- ( 2 )
 [ evento_2 -de-> evento_1 ;;; 0 ] --- Evento 2 --- ( 4 )
 -----
+NO INTRODUCIDO: [ evento_1 -de-> evento_2 ] --- Evento 1 --- ( 2 )
 NO INTRODUCIDO: [ evento_1 -de-> evento_1 ] --- Evento 1 --- ( 2 )
 NO INTRODUCIDO: [ evento_3 -de-> evento_4 ] --- Evento 3 --- ( 1 )
 NO INTRODUCIDO: [ evento_4 -de-> evento_4 ] --- Evento 4 --- ( 5 )
@@ -23,10 +24,11 @@ INDEPENDIZADO: evento_2
 NO INDEPENDIZADO: evento_3
 INTENTANDO hacer depend.: evento_2 -de-> evento_1
 INTENTANDO hacer depend.: evento_1 -de-> evento_1
+LOCALIZADO: [ evento_1 --- 1 ] --- Evento 1, después de un tiempo --- ( 2 )
 INTENTANDO hacer depend.: evento_1 -de-> evento_2
-IMPOSIBLE hacer depend.: evento_1 -de-> evento_4
 LOCALIZADO: [ evento_1 -de-> evento_2 ;;; 1 ] --- Evento 1, después de un tiempo --- ( 2 )
 INDEPENDIZADO: evento_1
+IMPOSIBLE hacer depend.: evento_1 -de-> evento_4
 IMPOSIBLE hacer depend.: evento_3 -de-> evento_1
 IMPOSIBLE hacer depend.: evento_3 -de-> evento_4
 INTRODUCIDO: [ evento_3 ] --- Evento 3 --- ( 3 )

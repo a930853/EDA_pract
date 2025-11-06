@@ -10,6 +10,8 @@
 
 using namespace std;
 
+// Añade un nuevo evento (dependiente o independiente) a la colección.
+// Escribe en la salida si se ha añadido correctamente o no.
 void instruccionA(colecInterdep<string,evento> &ci, ofstream &sal, string nom, string desc, int prio, string tipoDep, string nomSup) {
     evento e;
     crearEvento(desc,prio,e); // creamos el evento con la descripción y prioridad dadas
@@ -35,6 +37,8 @@ void instruccionA(colecInterdep<string,evento> &ci, ofstream &sal, string nom, s
         }
 }
 
+// Modifica la descripción y la prioridad de un evento existente.
+// Indica si el cambio se realizó correctamente o si no
 void instruccionC(colecInterdep<string,evento> &ci, ofstream &sal, string nom, string desc, unsigned prio) {
     evento e;
     bool esDep,error;
@@ -56,6 +60,8 @@ void instruccionC(colecInterdep<string,evento> &ci, ofstream &sal, string nom, s
     }       
 }
 
+// Busca un evento en la colección y muestra su información completa.
+// Informa si el evento ha sido localizado o no.
 void instruccionO(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
     evento e;
     unsigned NumDep;
@@ -75,6 +81,23 @@ void instruccionO(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
     }
 }
 
+// No realiza modificaciones, solo consulta el estado del evento.
+// Muestra si un evento es dependiente, independiente o desconocido.
+void instruccionE(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
+    if(existe(nom,ci)) {    // si existe el evento
+        if(existeDependiente(nom,ci)) {
+            sal << "DEPendiente: ";
+        } else {
+            sal << "INDEPendiente: ";
+        }
+    } else {    // si no existe el evento
+        sal << "DESCONOCIDO: ";
+    }
+    sal << nom << endl;
+}
+
+// Convierte un evento en independiente si no lo es ya.
+// Si el evento no existe, ya era independiente o se ha independizado, se indica en la salida.
 void instruccionI(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
     if(existe(nom,ci)) { // si existe el evento
         if(existeIndependiente(nom,ci)) { // era ya independiente
@@ -89,19 +112,8 @@ void instruccionI(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
     sal << nom << endl;
 }
 
-void instruccionE(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
-    if(existe(nom,ci)) {    // si existe el evento
-        if(existeDependiente(nom,ci)) {
-            sal << "DEPendiente: ";
-        } else {
-            sal << "INDEPendiente: ";
-        }
-    } else {    // si no existe el evento
-        sal << "DESCONOCIDO: ";
-    }
-    sal << nom << endl;
-}
-
+// Intenta establecer una relación de dependencia entre dos eventos.
+// Informa si la operación se ha podido intentar o no.
 void instruccionD(colecInterdep<string,evento> &ci, ofstream &sal, string nom, string nomSup) {
     if(existe(nom,ci) && existe(nomSup,ci)) {    // existen ambos eventos
         hacerDependiente(ci,nom,nomSup);
@@ -112,6 +124,8 @@ void instruccionD(colecInterdep<string,evento> &ci, ofstream &sal, string nom, s
     sal << nom << " -de-> " << nomSup << endl;
 }
 
+// Elimina un evento de la colección si existe.
+// Informa si el evento fue borrado o si no de la colección.
 void instruccionB(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
     unsigned tamPrev = tamanyo(ci);
     borrar(nom,ci);
@@ -120,6 +134,8 @@ void instruccionB(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
     } else {sal << "NO BORRADO: " << nom << endl;}  // no se ha borrado el evento de la colección (probablemente porque no exista)
 }
 
+// Muestra todos los eventos que dependen del evento indicado.
+// Si el evento no existe, indica que es desconocido.
 void instruccionLD(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
     evento e;
     unsigned NumDep,prio;
@@ -127,18 +143,18 @@ void instruccionLD(colecInterdep<string,evento> &ci, ofstream &sal, string nom) 
     string nomSup,nomAux,desc;
     sal << "****DEPENDIENTES: " << nom << endl;
     nomAux = nom;
-    obtenerDatos(nom,ci,e,nomSup,NumDep,esDep,error);
+    obtenerDatos(nom,ci,e,nomSup,NumDep,esDep,error);       // obtenemos los datos del evento principal
     if (!error) {
         desc = descripcion(e);
         prio = suPrioridad(e);
-        if (esDep) {
+        if (esDep) {    // si es dependiente
             sal << "[ " << nom << " -de-> " << nomSup << " ;;; " << NumDep 
             << " ]" << " --- " << desc << " --- ( " << prio << " ) ****" << endl;   
-        } else {
+        } else {    // si es independiente
             sal << "[ " << nom << " --- " << NumDep << " ]" << " --- " 
             << desc << " --- ( " << prio << " ) ****" << endl;         
         }
-        iniciarIterador(ci);
+        iniciarIterador(ci);            // recorremos la colección buscando dependientes
         unsigned i = 1;
         while (existeSiguiente(ci)) {
             if (!error) {siguienteSuperior(ci,nomSup,error);
@@ -163,6 +179,8 @@ void instruccionLD(colecInterdep<string,evento> &ci, ofstream &sal, string nom) 
     }
 }
 
+// Genera un listado completo de los eventos almacenados en la colección.
+// Muestra para cada uno su tipo, descripción, prioridad y número de dependientes.
 void instruccionLT(colecInterdep<string,evento> &ci, ofstream &sal) {
     evento e;
     unsigned NumDep,prio;
@@ -171,7 +189,7 @@ void instruccionLT(colecInterdep<string,evento> &ci, ofstream &sal) {
      sal << "-----LISTADO: " << tamanyo(ci) << endl;
             iniciarIterador(ci);
             error = false;
-            while (existeSiguiente(ci) && !error) {
+            while (existeSiguiente(ci) && !error) {     // recorremos todos los eventos de la colección
                 if(!error) {siguienteDependiente(ci,esDep,error);}
                 if(!error) {siguienteIdent(ci,nom,error);}
                 if(!error) {siguienteNumDependientes(ci,NumDep,error);}
@@ -179,11 +197,11 @@ void instruccionLT(colecInterdep<string,evento> &ci, ofstream &sal) {
                     desc = descripcion(e);
                     prio = suPrioridad(e);
                 }
-                if (esDep && !error) {
+                if (esDep && !error) {  // si es dependiente
                     siguienteSuperior(ci,nomSup,error);
                     sal << "[ " << nom << " -de-> " << nomSup << " ;;; " << NumDep 
                     << " ]" << " --- " << desc << " --- ( " << prio << " )" << endl;
-                } else if (!error){
+                } else if (!error){     // si es independiente
                     sal << "[ " << nom << " --- " << NumDep << " ]" << " --- " 
                     << desc << " --- ( " << prio << " )" << endl;
                 }
@@ -200,13 +218,13 @@ int main() {
 
     ifstream ent; 
     ofstream sal;
-    ent.open("entradaEjemplo.txt"); // abrimos el fichero de entrada
+    ent.open("entrada.txt"); // abrimos el fichero de entrada
     if(!ent.is_open()) {
         cerr << "No se pudo abrir el archivo entrada." << endl;
         return 1;
     }
 
-    sal.open("salidaPrueba.txt"); // abrimos el fichero de salida
+    sal.open("salida.txt"); // abrimos el fichero de salida
     if(!sal.is_open()) {
         cerr << "No se pudo abrir el archivo salida." << endl;
         return 1;
