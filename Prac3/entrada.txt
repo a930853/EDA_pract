@@ -38,7 +38,7 @@ DEPendiente
 entrenar
 C
 madrugar
-Madrugar por la mañana
+Madrugar pronto
 2
 C
 desayunar
