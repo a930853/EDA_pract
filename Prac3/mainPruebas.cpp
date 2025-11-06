@@ -35,8 +35,10 @@ int main() {
     evento e;       // evento
     string desc;    // descripción
     string prioS;   // prioridad (string)
+    string nomAux;  // nombre para funciones que necesiten ambos
     int prio;       // prioridad (int)
     unsigned NumDep;
+    unsigned i;     // para bucles
     string tipoDep;  // tipo de dependencia (dep. o ind.)
     string eventoSup;   // nombre del evento del cual depende el evento que se añade ("vacío" si es independiente)
     bool esDep,error;     // error en funciones parciales
@@ -151,6 +153,10 @@ int main() {
         } else if (instruccion == "D") {
             getline(ent,nom);
             getline(ent,eventoSup);
+            if(existe(nom,ci) && existe(eventoSup,ci)) {
+
+
+            }
 
             hacerDependiente(ci,nom,eventoSup);
 
@@ -169,11 +175,12 @@ int main() {
                 } else {sal << "NO BORRADO: " << nom << endl;}
             } else {sal << "NO BORRADO: " << nom << endl;} 
 
+            
         } else if (instruccion == "LD") {
             getline(ent,nom);
             sal << "****DEPENDIENTES: " << nom << endl;
+            nomAux = nom;
             if (existe(nom,ci)) {
-                string nomAux = nom;
                 obtenerVal(nom,ci,e,error);
                 if (!error) {
                     desc = descripcion(e);
@@ -182,31 +189,34 @@ int main() {
                 if (!error) {obtenerNumDependientes(nom,ci,NumDep,error);}
                 if( existeIndependiente(nom,ci) && !error) {
                         sal << "[ " << nom << " --- " << NumDep << " ]" << " --- " 
-                        << desc << " --- ( " << prio << " )" << endl;
+                        << desc << " --- ( " << prio << " ) ****" << endl;
                         
                 } else if (!error){
                         obtenerSupervisor(nom,ci,eventoSup,error);
                         if(!error) {
                             sal << "[ " << nom << " -de-> " << eventoSup << " ;;; " << NumDep 
-                            << " ]" << " --- " << desc << " --- ( " << prio << " )" << endl;
+                            << " ]" << " --- " << desc << " --- ( " << prio << " ) ****" << endl;
                         }
                 }
                 iniciarIterador(ci);
                 error = false;
+                i = 1;
                 while (existeSiguiente(ci)) {
                     if(!error) {siguienteDependiente(ci,esDep,error);}
                     if (esDep && !error) {
-                        if(!error) {siguienteIdent(ci,nom,error);}
-                        if(!error) {siguienteNumDependientes(ci,NumDep,error);}
-                        if(!error) {siguienteVal(ci,e,error);}
-                        if (!error) {
-                            desc = descripcion(e);
-                            prio = suPrioridad(e);
-                            siguienteSuperior(ci,eventoSup,error);
-                        } if (!error) {
-                            sal << "[ " << nom << " -de-> " << eventoSup << " ;;; " << NumDep 
-                            << " ]" << " --- " << desc << " --- ( " << prio << " )" << endl;
-                        }
+                        siguienteSuperior(ci,eventoSup,error);
+                        if(eventoSup == nomAux) {
+                            if(!error) {siguienteIdent(ci,nom,error);}
+                            if(!error) {siguienteNumDependientes(ci,NumDep,error);}
+                            if(!error) {siguienteVal(ci,e,error);}
+                            if (!error) {
+                                desc = descripcion(e);
+                                prio = suPrioridad(e);
+                                sal << "[" << i << " -> " << nom << " -de-> " << eventoSup << " ;;; " << NumDep 
+                                << " ]" << " --- " << desc << " --- ( " << prio << " ) ;;;;" << endl;
+                                i++;
+                            }
+                        }   
                     }
                     avanza(ci,error);
                 } 
@@ -241,8 +251,6 @@ int main() {
         } 
     }
 
-
-    
-
     ent.close();
+    sal.close();
 }

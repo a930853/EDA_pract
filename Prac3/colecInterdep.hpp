@@ -299,83 +299,143 @@ struct colecInterdep{
 
 // IMPLEMENTACION DE LAS OPERACIONES DEL TAD GENERICO colc
 
- //...documentar ...
+/*
+* Pre: ---
+* Post: Devuelve una colección 'ci' vacía (sin elementos), con el iterador inicializado.
+* Coste: Θ(1)
+*/
 template<typename ident,typename val>
 void crear(colecInterdep<ident,val>& ci) {
+    // Inicializa los punteros a nulo y el contador a 0 
     ci.inicio = nullptr;
     ci.numElementos = 0;
     ci.iterador = nullptr;
 }
 
+/*
+* Pre: ---
+* Post: Devuelve el número de elementos que hay en la colección 'ci'.
+* Coste: Θ(1)
+*/
 template<typename ident,typename val>
 unsigned tamanyo(colecInterdep<ident,val> ci) {
+    // Devuelve el contador de elementos mantenido en la estructura
     return ci.numElementos;
 }
 
+/*
+* Pre: ---
+* Post: Devuelve 'true' si y solo si 'ci' no contiene ningún elemento.
+* Coste: Θ(1)
+*/
 template<typename ident,typename val>
 bool esVacia(colecInterdep<ident,val> ci) {
+    // Comprueba el puntero de inicio y el contador 
     return ci.inicio == nullptr && ci.numElementos == 0;
 }
 
+/*
+* Pre: ---
+* Post: Devuelve 'true' si y solo si en 'ci' hay algún elemento con 'ident' igual a 'id'.
+* Coste: O(N) (N = numElementos). 
+*/
 template<typename ident,typename val>
 bool existe(ident id,colecInterdep<ident,val> ci) {
     typename colecInterdep<ident,val>::Nodo *nAux = ci.inicio;
+    // Búsqueda en lista ordenada: avanza mientras el 'id' actual sea menor
     while (nAux != nullptr && nAux->id < id) {
         nAux = nAux->siguiente;
     }
+    // Si el bucle paró, o es nulo (fin de lista) o 'nAux->id >= id'.
+    // Comprueba si es '== id'.
     return (nAux != nullptr && nAux->id == id);
 }
 
+/*
+* Pre: ---
+* Post: Devuelve 'true' si existe un elemento con 'id' y es dependiente.
+* Coste: O(N) (N = numElementos).
+*/
 template<typename ident,typename val>
 bool existeDependiente(ident id,colecInterdep<ident,val> ci) {
     typename colecInterdep<ident,val>::Nodo *nAux = ci.inicio; //puntero para recorrer la colección
+    // Búsqueda en lista ordenada 
     while (nAux != nullptr && nAux->id < id) {
         nAux = nAux->siguiente;
     }
+    // Devuelve 'true' si se encontró el 'id' Y su puntero de dependencia no es nulo
     return (nAux != nullptr && nAux->id == id && nAux->NodoDep != nullptr );
 }
 
+/*
+* Pre: ---
+* Post: Devuelve 'true' si existe un elemento con 'id' y es independiente.
+* Coste: O(N) (N = numElementos).
+*/
 template<typename ident,typename val>
 bool existeIndependiente(ident id,colecInterdep<ident,val> ci) {
     typename colecInterdep<ident,val>::Nodo *nAux = ci.inicio; //puntero para recorrer la colección
+    // Búsqueda en lista ordenada 
     while (nAux != nullptr && nAux->id < id) {
         nAux = nAux->siguiente;
     }
+    // Devuelve 'true' si se encontró el 'id' Y su puntero de dependencia es nulo
     return (nAux != nullptr && nAux->id == id && nAux->NodoDep == nullptr );
 }
 
+/*
+* Pre: ---
+* Post: Si no existe?(id,c), añade el elemento independiente (id,v,-,0) a 'ci'
+* manteniendo el orden. Si ya existe, no hace nada.
+* Coste: O(N) (N = numElementos)
+*/
 template<typename ident,typename val>
 void anyadirIndependiente(colecInterdep<ident,val> &ci, ident id, val v) {
     typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección y su anterior
         *nAux = ci.inicio, *nAnterior = ci.inicio;
+    
+    // 1. Buscar la posición de inserción (o el elemento si ya existe) 
     while (nAux != nullptr && nAux->id < id) {
         nAnterior = nAux;
         nAux = nAux->siguiente;
     }
+    
+    // 2. Si 'id' no se encontró (es nulo o el 'id' es mayor)
     if (nAux == nullptr || nAux->id != id) {
-        //Nodo añadido
+        // 3. Crear el nuevo nodo
         typename colecInterdep<ident,val>::Nodo 
             *nNew = new typename colecInterdep<ident,val>::Nodo;
         nNew->id = id;
         nNew->v = v;
         nNew->NumDepend = 0;
-        nNew->NodoDep = nullptr;
+        nNew->NodoDep = nullptr; // Es independiente
         ci.numElementos++;
-        if (nAux == nAnterior) {    //caso nNew al principio o colección vacia
+        
+        // 4. Enlazar el nodo en la lista
+        if (nAux == nAnterior) {    // 4a. Insertar al principio (o en lista vacía)
             ci.inicio = nNew;
             nNew->siguiente = nAux;
-        } else {    //caso nNew última posición o entre valores
+        } else {    // 4b. Insertar en medio o al final
             nAnterior->siguiente = nNew;
             nNew->siguiente = nAux;
         }
     }
+    // Si 'id' ya existe (nAux->id == id), no se hace nada.
 }
 
+/*
+* Pre: 'idSup' debe existir en 'ci'.
+* Post: Si no existe?(id,c), añade el elemento (id,v,idSup,0) a 'ci'
+* y actualiza el contador de 'idSup'. Si 'id' ya existe o 'idSup' no existe, no hace nada.
+* Coste: O(N) (N = numElementos).
+*/
 template<typename ident,typename val>
 void anyadirDependiente(colecInterdep<ident,val> &ci, ident id, val v, ident idSup) {
     typename colecInterdep<ident,val>::Nodo //punteros para recorrer la colección
         *nAux = ci.inicio, *nAnterior = ci.inicio, *nAuxSup = ci.inicio, *nRec = ci.inicio;
 
+    // 1. Búsqueda simultánea del supervisor (nAuxSup) y la posición de inserción (nAux)
+    // nRec actúa como puntero de avance principal para asegurar que el bucle termina
     while (nRec != nullptr && (nAux->id < id || nAuxSup->id < idSup)) {
         if (nAuxSup->id < idSup) {
             nAuxSup = nAuxSup->siguiente;
@@ -386,33 +446,47 @@ void anyadirDependiente(colecInterdep<ident,val> &ci, ident id, val v, ident idS
         }
         nRec = nRec->siguiente;
     }
-    if (nAuxSup == nullptr || nAuxSup->id != idSup) {return;}
+    
+    // 2. Comprobar que el supervisor existe (precondición)
+    if (nAuxSup == nullptr || nAuxSup->id != idSup) {return;} // Supervisor no encontrado
+    
+    // 3. Comprobar que el 'id' a añadir no existe
     if (nAux == nullptr || nAux->id != id) {
-        //Nodo añadido
+        // 4. Crear y enlazar el nuevo nodo (similar a anyadirIndependiente)
         typename colecInterdep<ident,val>::Nodo 
             *nNew = new typename colecInterdep<ident,val>::Nodo;
         nNew->id = id;
         nNew->v = v;
         nNew->NumDepend = 0;
-        nNew->NodoDep = nAuxSup;
-        nAuxSup->NumDepend++;
+        nNew->NodoDep = nAuxSup; // Asignar supervisor
+        nAuxSup->NumDepend++;    // Incrementar contador del supervisor
         ci.numElementos++;
-        if (nAux == nAnterior) {    //caso nNew al principio o colección vacia
+        
+        if (nAux == nAnterior) {    // Insertar al principio 
             ci.inicio = nNew;
             nNew->siguiente = nAux;
-        } else {    //caso nNew última posición o entre valores
+        } else {    // Insertar en medio o al final 
             nAnterior->siguiente = nNew;
             nNew->siguiente = nAux;
         }
     }
 }
 
+/*
+* Pre: 'id' e 'idSup' deben existir en 'ci'.
+* Post: Si no igual(id,idSup), 'id' pasa a ser dependiente de 'idSup'. 
+* Si 'id' ya era dependiente, se actualiza su antiguo supervisor.
+* Coste: O(N) (N = numElementos).
+*/
 template<typename ident,typename val>
 void hacerDependiente(colecInterdep<ident,val> &ci, ident id, ident idSup) {
+    // 1. Evitar auto-dependencia
     if (id == idSup) {return;} 
+    
     typename colecInterdep<ident,val>::Nodo //punteros para recorrer la colección
         *nAux = ci.inicio, *nAuxSup = ci.inicio, *nRec = ci.inicio;
 
+    // 2. Búsqueda simultánea de 'id' (nAux) y 'idSup' (nAuxSup)
     while (nRec != nullptr && (nAux->id < id || nAuxSup->id < idSup)) {
         if (nAuxSup->id < idSup) {
             nAuxSup = nAuxSup->siguiente;
@@ -422,128 +496,221 @@ void hacerDependiente(colecInterdep<ident,val> &ci, ident id, ident idSup) {
         }
         nRec = nRec->siguiente;
     }
-    if (nAuxSup == nullptr || nAuxSup->id != idSup) {return;}
-    if (nAux != nullptr && nAux->id == id) {
-        nAuxSup->NumDepend++;
+    
+    // 3. Comprobar que ambos nodos existen
+    if (nAuxSup == nullptr || nAuxSup->id != idSup) {return;} // Supervisor no existe
+    if (nAux != nullptr && nAux->id == id) { // Nodo 'id' existe
+        // 4. Re-enlazar dependencia
+        nAuxSup->NumDepend++; // Incrementar nuevo supervisor
+        // Si ya tenía un supervisor, decrementar el contador del antiguo
         if (nAux->NodoDep != nullptr) {
-            nAux->NodoDep->NumDepend--;
+            nAux->NodoDep->NumDepend--; 
         }
-        nAux->NodoDep = nAuxSup;
+        nAux->NodoDep = nAuxSup; // Asignar nuevo supervisor
     }
 }
 
+/*
+* Pre: 'id' debe existir en 'ci'.
+* Post: El elemento 'id' pasa a ser independiente (si era dependiente).
+* Coste: O(N) (N = numElementos).
+*/
 template<typename ident,typename val>
 void hacerIndependiente(colecInterdep<ident,val> &ci, ident id) {
-    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección,su anterior u uno para buscar el supervisor
+    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección
         *nAux = ci.inicio;
-     while (nAux != nullptr && nAux->id < id) {
+    
+    // 1. Buscar el nodo
+    while (nAux != nullptr && nAux->id < id) {
         nAux = nAux->siguiente;
     }
+    
+    // 2. Si se encuentra y tiene supervisor...
     if (nAux != nullptr && nAux->id == id && nAux->NodoDep != nullptr) {
+        // 3. Decrementa el contador del supervisor
         nAux->NodoDep->NumDepend--;
+        // 4. Elimina el enlace de dependencia
         nAux->NodoDep = nullptr;
     }
 }
 
+/*
+* Pre: 'id' debe existir en 'ci' (operación parcial).
+* Post: Actualiza el valor 'v' del elemento 'id'. 'error' es 'false'.
+* Si no existe 'id', 'error' es 'true'.
+* Coste: O(N) (N = numElementos).
+*/
 template<typename ident,typename val>
 void actualizarVal(colecInterdep<ident,val> &ci, ident id, val v, bool &error) {
-    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección,su anterior u uno para buscar el supervisor
+    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección
         *nAux = ci.inicio;
-     while (nAux != nullptr && nAux->id < id) {
+    
+    // 1. Buscar el nodo 
+    while (nAux != nullptr && nAux->id < id) {
         nAux = nAux->siguiente;
     }
+    
+    // 2. Comprobar si se ha encontrado
     if (nAux == nullptr || nAux->id != id) {
         error = true;
     } else {
+        // 3. Actualizar valor
         error = false;
         nAux->v = v;
     }
 }
 
+/*
+* Pre: 'id' debe existir en 'ci' (operación parcial).
+* Post: Devuelve en 'v' el valor del elemento 'id'. 'error' es 'false'.
+* Si no existe 'id', 'error' es 'true'.
+* Coste: O(N) (N = numElementos).
+*/
 template<typename ident,typename val>
 void obtenerVal(ident id, colecInterdep<ident,val> ci,val &v, bool &error) {
-    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección,su anterior u uno para buscar el supervisor
+    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección
         *nAux = ci.inicio;
-     while (nAux != nullptr && nAux->id < id) {
+    
+    // 1. Buscar el nodo 
+    while (nAux != nullptr && nAux->id < id) {
         nAux = nAux->siguiente;
     }
+    
+    // 2. Comprobar si se ha encontrado
     if (nAux == nullptr || nAux->id != id) {
         error = true;
     } else {
+        // 3. Obtener valor
         error = false;
         v = nAux->v;
     }
 }
 
+/*
+* Pre: 'id' debe existir y ser dependiente (operación parcial).
+* Post: Devuelve en 'idSup' el 'id' del supervisor de 'id'. 'error' es 'false'.
+* Si no existe 'id' o es independiente, 'error' es 'true'.
+* Coste: O(N) (N = numElementos).
+*/
 template<typename ident,typename val>
 void obtenerSupervisor(ident id, colecInterdep<ident,val> ci, ident &idSup, bool &error) {
-    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección,su anterior u uno para buscar el supervisor
+    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección
         *nAux = ci.inicio;
+
+    // 1. Buscar el nodo
     while (nAux != nullptr && nAux->id < id) {
         nAux = nAux->siguiente;
     }
+    
+    // 2. Comprobar precondiciones: que exista Y que sea dependiente
     if (nAux == nullptr || nAux->id != id || (nAux->id == id && nAux->NodoDep == nullptr)) {
         error = true;
     } else {
+        // 3. Obtener id del supervisor
         error = false;
         idSup = nAux->NodoDep->id;
     }
 }
 
+/*
+* Pre: 'id' debe existir en 'ci' (operación parcial).
+* Post: Devuelve en 'NumDep' el nº de dependientes de 'id'. 'error' es 'false'.
+* Si no existe 'id', 'error' es 'true'.
+* Coste: O(N) (N = numElementos).
+*/
 template<typename ident,typename val>
 void obtenerNumDependientes(ident id, colecInterdep<ident,val> ci, unsigned &NumDep, bool &error) {
-    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección,su anterior u uno para buscar el supervisor
+    typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección
         *nAux = ci.inicio;
-     while (nAux != nullptr && nAux->id < id) {
+    
+    // 1. Buscar el nodo
+    while (nAux != nullptr && nAux->id < id) {
         nAux = nAux->siguiente;
     }
+    
+    // 2. Comprobar si se ha encontrado
     if (nAux == nullptr || nAux->id != id) {
         error = true;
     } else {
+        // 3. Obtener el contador
         error = false;    
         NumDep = nAux->NumDepend;
     }
 }
 
+/*
+* Pre: 'id' debe existir y no tener dependientes (NumDepend == 0).
+* Post: Elimina el elemento 'id' de 'ci'. Si 'id' no existe o tiene 
+* dependientes, no hace nada.
+* Coste: O(N) (N = numElementos).
+*/
 template<typename ident,typename val>
 void borrar(ident id, colecInterdep<ident,val> &ci) {
     typename colecInterdep<ident,val>::Nodo //puntero para recorrer la colección y su anterior
         *nAux = ci.inicio, *nAnterior = ci.inicio;
+    
+    // 1. Buscar el nodo a borrar
     while (nAux != nullptr && nAux->id < id) {
         nAnterior = nAux;
         nAux = nAux->siguiente;
     }
+    
+    // 2. Si se encuentra Y cumple la precondición (no tiene dependientes)
     if (nAux != nullptr && nAux->id == id && nAux->NumDepend == 0) {
+        
+        // 3. Si era dependiente, notificar a su supervisor
         if (nAux->NodoDep != nullptr) {
             nAux->NodoDep->NumDepend--;
         }
-       if (nAux == nAnterior) {    //caso nNaux al principio       
+        
+        // 4. Desenlazar de la lista y liberar memoria 
+        if (nAux == nAnterior) {    // 4a. Borrar el primer elemento 
             ci.inicio = nAux->siguiente;
             delete nAux;
-        } else {    //caso nNew última posición o entre valores
+        } else {    // 4b. Borrar un elemento intermedio o final
             nAnterior->siguiente = nAux->siguiente;
             delete nAux;
         }
-        ci.numElementos--;
+        ci.numElementos--; // Decrementar contador total
     }
+    // Si no se encuentra o tiene dependientes, no se borra
 }
 
 /*---------------------
  * OPERACIONES ITERADOR
  *---------------------*/
 
+/*
+* Pre: ---
+* Post: Prepara el iterador para que el siguiente elemento a visitar 
+* sea el primero de la colección (según el orden de 'id'). 
+* Coste: Θ(1)
+*/
 template<typename ident,typename val>
 void iniciarIterador(colecInterdep<ident,val>& ci) {
     ci.iterador = ci.inicio;
 }
 
+/*
+* Pre: ---
+* Post: Devuelve 'true' si queda algún elemento por visitar, 
+* 'false' en caso contrario. 
+* Coste: Θ(1)
+*/
 template<typename ident,typename val>
 bool existeSiguiente(colecInterdep<ident,val> ci) {
     return ci.iterador != nullptr;
 }
-  
+ 
+/*
+* Pre: existeSiguiente(ci) == true (operación parcial).
+* Post: 'id' toma el identificador del elemento actual. 'error' es 'false'.
+* Si no existe siguiente, 'error' es 'true'.
+* Coste: Θ(1)
+*/
 template<typename ident,typename val>
 void siguienteIdent(colecInterdep<ident,val> ci, ident &id, bool &error) {
+    // Comprueba si el iterador es nulo (fin del recorrido)
     if (ci.iterador != nullptr) {
         error = false;
         id = ci.iterador->id;
@@ -552,6 +719,12 @@ void siguienteIdent(colecInterdep<ident,val> ci, ident &id, bool &error) {
     }
 }
 
+/*
+* Pre: existeSiguiente(ci) == true (operación parcial).
+* Post: 'v' toma el valor del elemento actual. 'error' es 'false'.
+* Si no existe siguiente, 'error' es 'true'.
+* Coste: Θ(1)
+*/
 template<typename ident,typename val>
 void siguienteVal(colecInterdep<ident,val> ci, val &v, bool &error) {
     if (ci.iterador != nullptr) {
@@ -562,6 +735,12 @@ void siguienteVal(colecInterdep<ident,val> ci, val &v, bool &error) {
     }
 }
 
+/*
+* Pre: existeSiguiente(ci) == true (operación parcial).
+* Post: 'esDep' es 'true' si el elemento actual es dependiente. 'error' es 'false'.
+* Si no existe siguiente, 'error' es 'true'.
+* Coste: Θ(1)
+*/
 template<typename ident,typename val>
 void siguienteDependiente(colecInterdep<ident,val> ci, bool &esDep, bool &error) {
     if (ci.iterador != nullptr) {
@@ -572,8 +751,15 @@ void siguienteDependiente(colecInterdep<ident,val> ci, bool &esDep, bool &error)
     }
 }
 
+/*
+* Pre: existeSiguiente(ci) == true y el elemento actual es dependiente (parcial).
+* Post: 'idSup' toma el 'id' del supervisor del elemento actual. 'error' es 'false'.
+* Si no existe siguiente o es independiente, 'error' es 'true'.
+* Coste: Θ(1)
+*/
 template<typename ident,typename val>
 void siguienteSuperior(colecInterdep<ident,val> ci, ident &idSup, bool &error) {
+    // Comprueba ambas precondiciones
     if (ci.iterador != nullptr && ci.iterador->NodoDep != nullptr) {
         error = false;
         idSup = ci.iterador->NodoDep->id;
@@ -582,6 +768,12 @@ void siguienteSuperior(colecInterdep<ident,val> ci, ident &idSup, bool &error) {
     }
 }
 
+/*
+* Pre: existeSiguiente(ci) == true (operación parcial).
+* Post: 'NumDep' toma el nº de dependientes del elemento actual. 'error' es 'false'.
+* Si no existe siguiente, 'error' es 'true'.
+* Coste: Θ(1)
+*/
 template<typename ident,typename val>
 void siguienteNumDependientes(colecInterdep<ident,val> ci, unsigned &NumDep, bool &error) {
     if (ci.iterador != nullptr) {
@@ -592,10 +784,17 @@ void siguienteNumDependientes(colecInterdep<ident,val> ci, unsigned &NumDep, boo
     }
 }
 
+/*
+* Pre: existeSiguiente(ci) == true (operación parcial).
+* Post: Avanza el iterador al siguiente elemento. 'error' es 'false'.
+* Si no existe siguiente, 'error' es 'true'.
+* Coste: Θ(1)
+*/
 template<typename ident,typename val>
 void avanza(colecInterdep<ident,val>& ci, bool &error) {
     if (ci.iterador != nullptr) {
         error = false;
+        // Mueve el puntero iterador al siguiente nodo de la lista 
         ci.iterador = ci.iterador->siguiente;
     } else {
         error = true;
