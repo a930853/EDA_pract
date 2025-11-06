@@ -1,85 +1,63 @@
 -----LISTADO: 0
 -----
-NO CAMBIADO: apertura_2025_10_6
-INTRODUCIDO: [ cierre_2025_10_6 ] --- Cierre del edificio --- ( 2 )
-NO INTRODUCIDO: [ ON_luces Z008 -de-> presencia_S008 ] --- Encendidas luces008, deteccion sensor presencia --- ( 2 )
-****DEPENDIENTES: presencia_S008
+INTRODUCIDO: [ evento_1 ] --- Evento 1 --- ( 2 )
+INTRODUCIDO: [ evento_2 -de-> evento_1 ] --- Evento 2 --- ( 4 )
+-----LISTADO: 2
+[ evento_1 --- 1 ] --- Evento 1 --- ( 2 )
+[ evento_2 -de-> evento_1 ;;; 0 ] --- Evento 2 --- ( 4 )
+-----
+NO INTRODUCIDO: [ evento_1 -de-> evento_1 ] --- Evento 1 --- ( 2 )
+NO INTRODUCIDO: [ evento_3 -de-> evento_4 ] --- Evento 3 --- ( 1 )
+NO INTRODUCIDO: [ evento_4 -de-> evento_4 ] --- Evento 4 --- ( 5 )
+CAMBIADO: [ evento_1 --- 1 ] --- Evento 1, después de un tiempo --- ( 2 )
+CAMBIADO: [ evento_2 -de-> evento_1 ;;; 0 ] --- Evento 2 --- ( 3 )
+NO CAMBIADO: evento_3
+LOCALIZADO: [ evento_1 --- 1 ] --- Evento 1, después de un tiempo --- ( 2 )
+LOCALIZADO: [ evento_2 -de-> evento_1 ;;; 0 ] --- Evento 2 --- ( 3 )
+NO LOCALIZADO: evento_3
+INDEPendiente: evento_1
+DEPendiente: evento_2
+DESCONOCIDO: evento_3
+YA ERA INDepend.: evento_1
+INDEPENDIZADO: evento_2
+NO INDEPENDIZADO: evento_3
+INTENTANDO hacer depend.: evento_2 -de-> evento_1
+INTENTANDO hacer depend.: evento_1 -de-> evento_1
+INTENTANDO hacer depend.: evento_1 -de-> evento_2
+IMPOSIBLE hacer depend.: evento_1 -de-> evento_4
+LOCALIZADO: [ evento_1 -de-> evento_2 ;;; 1 ] --- Evento 1, después de un tiempo --- ( 2 )
+INDEPENDIZADO: evento_1
+IMPOSIBLE hacer depend.: evento_3 -de-> evento_1
+IMPOSIBLE hacer depend.: evento_3 -de-> evento_4
+INTRODUCIDO: [ evento_3 ] --- Evento 3 --- ( 3 )
+INTRODUCIDO: [ evento_4 -de-> evento_3 ] --- Evento 4 --- ( 4 )
+NO BORRADO: evento_5
+NO BORRADO: evento_1
+BORRADO: evento_2
+BORRADO: evento_1
+****DEPENDIENTES: evento_3
+[ evento_3 --- 1 ] --- Evento 3 --- ( 3 )
+[ evento_4 -de-> evento_3 ;;; 0 ] --- Evento 4 --- ( 4 )
+****FINAL dependientes -de-> evento_3
+BORRADO: evento_4
+****DEPENDIENTES: evento_3
+[ evento_3 --- 0 ] --- Evento 3 --- ( 3 )
+****FINAL dependientes -de-> evento_3
+****DEPENDIENTES: evento_5
 ****DESCONOCIDO: 
------LISTADO: 1
-[ cierre_2025_10_6 --- 0 ] --- Cierre del edificio --- ( 2 )
------
-INTRODUCIDO: [ Validacion_P001_exterior ] --- Validacion acceso en puerta P001, desde exterior --- ( 3 )
-INTRODUCIDO: [ apertura_P001 -de-> Validacion_P001_exterior ] --- Abierta puerta P001 --- ( 3 )
-INTRODUCIDO: [ presencia_S008 ] --- Deteccion presencia, sensor S008 --- ( 3 )
-INTRODUCIDO: [ ON_luces Z008 -de-> presencia_S008 ] --- Encendidas luces008, deteccion sensor presencia --- ( 4 )
-INTRODUCIDO: [ OFF_luces Z008 -de-> ON_luces Z008 ] --- Apagadas luces zona 008, por expiracion tiempo --- ( 2 )
------LISTADO: 6
-[ OFF_luces Z008 -de-> ON_luces Z008 ;;; 0 ] --- Apagadas luces zona 008, por expiracion tiempo --- ( 2 )
-[ ON_luces Z008 -de-> presencia_S008 ;;; 1 ] --- Encendidas luces008, deteccion sensor presencia --- ( 4 )
-[ Validacion_P001_exterior --- 1 ] --- Validacion acceso en puerta P001, desde exterior --- ( 3 )
-[ apertura_P001 -de-> Validacion_P001_exterior ;;; 0 ] --- Abierta puerta P001 --- ( 3 )
-[ cierre_2025_10_6 --- 0 ] --- Cierre del edificio --- ( 2 )
-[ presencia_S008 --- 1 ] --- Deteccion presencia, sensor S008 --- ( 3 )
------
-****DEPENDIENTES: Validacion_P001_exterior
-[ Validacion_P001_exterior --- 1 ] --- Validacion acceso en puerta P001, desde exterior --- ( 3 )
-[ OFF_luces Z008 -de-> ON_luces Z008 ;;; 0 ] --- Apagadas luces zona 008, por expiracion tiempo --- ( 2 )
-[ ON_luces Z008 -de-> presencia_S008 ;;; 1 ] --- Encendidas luces008, deteccion sensor presencia --- ( 4 )
-[ apertura_P001 -de-> Validacion_P001_exterior ;;; 0 ] --- Abierta puerta P001 --- ( 3 )
-****FINAL dependientes -de-> Validacion_P001_exterior
-CAMBIADO: [ apertura_P001 -de-> Validacion_P001_exterior ;;; 0 ] --- Abierta puerta P001, previa validacion --- ( 2 )
-CAMBIADO: [ presencia_S008 --- 1 ] --- presencia, sensor S008 --- ( 4 )
-****DEPENDIENTES: presencia_S008
-[ presencia_S008 --- 1 ] --- presencia, sensor S008 --- ( 4 )
-[ OFF_luces Z008 -de-> ON_luces Z008 ;;; 0 ] --- Apagadas luces zona 008, por expiracion tiempo --- ( 2 )
-[ ON_luces Z008 -de-> presencia_S008 ;;; 1 ] --- Encendidas luces008, deteccion sensor presencia --- ( 4 )
-[ apertura_P001 -de-> Validacion_P001_exterior ;;; 0 ] --- Abierta puerta P001, previa validacion --- ( 2 )
-****FINAL dependientes -de-> presencia_S008
------LISTADO: 6
-[ OFF_luces Z008 -de-> ON_luces Z008 ;;; 0 ] --- Apagadas luces zona 008, por expiracion tiempo --- ( 2 )
-[ ON_luces Z008 -de-> presencia_S008 ;;; 1 ] --- Encendidas luces008, deteccion sensor presencia --- ( 4 )
-[ Validacion_P001_exterior --- 1 ] --- Validacion acceso en puerta P001, desde exterior --- ( 3 )
-[ apertura_P001 -de-> Validacion_P001_exterior ;;; 0 ] --- Abierta puerta P001, previa validacion --- ( 2 )
-[ cierre_2025_10_6 --- 0 ] --- Cierre del edificio --- ( 2 )
-[ presencia_S008 --- 1 ] --- presencia, sensor S008 --- ( 4 )
------
-****DEPENDIENTES: presencia_S008
-[ presencia_S008 --- 2 ] --- presencia, sensor S008 --- ( 4 )
-[ OFF_luces Z008 -de-> presencia_S008 ;;; 0 ] --- Apagadas luces zona 008, por expiracion tiempo --- ( 2 )
-[ ON_luces Z008 -de-> presencia_S008 ;;; 0 ] --- Encendidas luces008, deteccion sensor presencia --- ( 4 )
-[ apertura_P001 -de-> Validacion_P001_exterior ;;; 0 ] --- Abierta puerta P001, previa validacion --- ( 2 )
-****FINAL dependientes -de-> presencia_S008
-****DEPENDIENTES: Validacion_P001_exterior
-[ Validacion_P001_exterior --- 0 ] --- Validacion acceso en puerta P001, desde exterior --- ( 3 )
-[ OFF_luces Z008 -de-> presencia_S008 ;;; 0 ] --- Apagadas luces zona 008, por expiracion tiempo --- ( 2 )
-[ ON_luces Z008 -de-> presencia_S008 ;;; 0 ] --- Encendidas luces008, deteccion sensor presencia --- ( 4 )
-****FINAL dependientes -de-> Validacion_P001_exterior
-CAMBIADO: [ apertura_P001 --- 0 ] --- Abierta puerta P001 sin validacion acceso --- ( 5 )
------LISTADO: 6
-[ OFF_luces Z008 -de-> presencia_S008 ;;; 0 ] --- Apagadas luces zona 008, por expiracion tiempo --- ( 2 )
-[ ON_luces Z008 -de-> presencia_S008 ;;; 0 ] --- Encendidas luces008, deteccion sensor presencia --- ( 4 )
-[ Validacion_P001_exterior --- 0 ] --- Validacion acceso en puerta P001, desde exterior --- ( 3 )
-[ apertura_P001 --- 1 ] --- Abierta puerta P001 sin validacion acceso --- ( 5 )
-[ cierre_2025_10_6 --- 0 ] --- Cierre del edificio --- ( 2 )
-[ presencia_S008 -de-> apertura_P001 ;;; 2 ] --- presencia, sensor S008 --- ( 4 )
------
-NO BORRADO: apertura_2025_10_7
-BORRADO: OFF_luces Z008
-NO BORRADO: presencia_S008
-****DEPENDIENTES: presencia_S008
-[ presencia_S008 -de-> apertura_P001 ;;; 1 ] --- presencia, sensor S008 --- ( 4 )
-[ ON_luces Z008 -de-> presencia_S008 ;;; 0 ] --- Encendidas luces008, deteccion sensor presencia --- ( 4 )
-[ presencia_S008 -de-> apertura_P001 ;;; 1 ] --- presencia, sensor S008 --- ( 4 )
-****FINAL dependientes -de-> presencia_S008
-****DEPENDIENTES: apertura_P001
-[ apertura_P001 --- 1 ] --- Abierta puerta P001 sin validacion acceso --- ( 5 )
-[ ON_luces Z008 -de-> presencia_S008 ;;; 0 ] --- Encendidas luces008, deteccion sensor presencia --- ( 4 )
-[ presencia_S008 -de-> apertura_P001 ;;; 1 ] --- presencia, sensor S008 --- ( 4 )
-****FINAL dependientes -de-> apertura_P001
------LISTADO: 5
-[ ON_luces Z008 -de-> presencia_S008 ;;; 0 ] --- Encendidas luces008, deteccion sensor presencia --- ( 4 )
-[ Validacion_P001_exterior --- 0 ] --- Validacion acceso en puerta P001, desde exterior --- ( 3 )
-[ apertura_P001 --- 1 ] --- Abierta puerta P001 sin validacion acceso --- ( 5 )
-[ cierre_2025_10_6 --- 0 ] --- Cierre del edificio --- ( 2 )
-[ presencia_S008 -de-> apertura_P001 ;;; 1 ] --- presencia, sensor S008 --- ( 4 )
+INTRODUCIDO: [ evento_6 ] --- Evento 6 --- ( 2 )
+INTRODUCIDO: [ evento_7 -de-> evento_6 ] --- Evento 7 --- ( 4 )
+INTENTANDO hacer depend.: evento_3 -de-> evento_7
+INTRODUCIDO: [ evento_4 -de-> evento_7 ] --- Evento 4 --- ( 1 )
+****DEPENDIENTES: evento_7
+[ evento_7 -de-> evento_6 ;;; 2 ] --- Evento 7 --- ( 4 )
+[ evento_3 -de-> evento_7 ;;; 0 ] --- Evento 3 --- ( 3 )
+[ evento_4 -de-> evento_7 ;;; 0 ] --- Evento 4 --- ( 1 )
+[ evento_7 -de-> evento_6 ;;; 2 ] --- Evento 7 --- ( 4 )
+****FINAL dependientes -de-> evento_7
+-----LISTADO: 4
+[ evento_3 -de-> evento_7 ;;; 0 ] --- Evento 3 --- ( 3 )
+[ evento_4 -de-> evento_7 ;;; 0 ] --- Evento 4 --- ( 1 )
+[ evento_6 --- 1 ] --- Evento 6 --- ( 2 )
+[ evento_7 -de-> evento_6 ;;; 2 ] --- Evento 7 --- ( 4 )
 -----
