@@ -1,4 +1,4 @@
- /* Javier Martínez Virto 930853
+/* Javier Martínez Virto 930853
 * Víctor Marteles Martínez 928927
 */
 
@@ -240,64 +240,49 @@ int main() {
 
     while (ent >> instruccion) { 
 
-	    getline(ent,salto);
+	    getline(ent,salto);   
          
 	    if (instruccion == "A") {         
             
             getline(ent,nom);
-            if (!nom.empty() && (nom.back() == '\r' || nom.back() == '\n')) nom.pop_back();
             getline(ent,desc);
-            if (!desc.empty() && (desc.back() == '\r' || desc.back() == '\n')) desc.pop_back();
             getline(ent,prioS);
-            if (!prioS.empty() && (prioS.back() == '\r' || prioS.back() == '\n')) prioS.pop_back();
             prio = stoi(prioS);     // convertimos el string "prioS" en un int "prio"
             getline(ent,tipoDep);
-            if (!tipoDep.empty() && (tipoDep.back() == '\r' || tipoDep.back() == '\n')) tipoDep.pop_back();
             getline(ent,nomSup);
-            if (!nomSup.empty() && (nomSup.back() == '\r' || nomSup.back() == '\n')) nomSup.pop_back();
             instruccionA(ci,sal,nom,desc,prio,tipoDep,nomSup);
             
 
 	    } else if (instruccion == "C") {         
             getline(ent,nom);
-            if (!nom.empty() && (nom.back() == '\r' || nom.back() == '\n')) nom.pop_back();
             getline(ent,desc);
-            if (!desc.empty() && (desc.back() == '\r' || desc.back() == '\n')) desc.pop_back();
             getline(ent,prioS);
-            if (!prioS.empty() && (prioS.back() == '\r' || prioS.back() == '\n')) prioS.pop_back();
             prio = stoi(prioS);     // convertimos el string "prioS" en un int "prio"
             instruccionC(ci,sal,nom,desc,prio);
                        
         } else if (instruccion == "O") {
             getline(ent,nom);
-            if (!nom.empty() && (nom.back() == '\r' || nom.back() == '\n')) nom.pop_back();
             instruccionO(ci,sal,nom);
             
         } else if (instruccion == "E") {
             getline(ent,nom);
-            if (!nom.empty() && (nom.back() == '\r' || nom.back() == '\n')) nom.pop_back();
             instruccionE(ci,sal,nom);
 
         } else if (instruccion == "I") {
             getline(ent,nom);
-            if (!nom.empty() && (nom.back() == '\r' || nom.back() == '\n')) nom.pop_back();
             instruccionI(ci,sal,nom);
 
         } else if (instruccion == "D") {
             getline(ent,nom);
-            if (!nom.empty() && (nom.back() == '\r' || nom.back() == '\n')) nom.pop_back();
             getline(ent,nomSup);
-            if (!nomSup.empty() && (nomSup.back() == '\r' || nomSup.back() == '\n')) nomSup.pop_back();
             instruccionD(ci,sal,nom,nomSup);
 
         } else if (instruccion == "B") {
             getline(ent,nom);
-            if (!nom.empty() && (nom.back() == '\r' || nom.back() == '\n')) nom.pop_back();
             instruccionB(ci,sal,nom);
 
         } else if (instruccion == "LD") {
             getline(ent,nom);
-            if (!nom.empty() && (nom.back() == '\r' || nom.back() == '\n')) nom.pop_back();
             instruccionLD(ci,sal,nom);
             
         } else if (instruccion == "LT") {
