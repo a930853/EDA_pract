@@ -10,10 +10,10 @@ NO INTRODUCIDO: [ madrugar -de-> desayunar ] --- Madrugar --- ( 2 )
 NO INTRODUCIDO: [ madrugar -de-> madrugar ] --- Madrugar --- ( 2 )
 NO INTRODUCIDO: [ gimnasio -de-> entrenar ] --- Ir al gimnasio --- ( 1 )
 NO INTRODUCIDO: [ entrenar -de-> entrenar ] --- Entrenar duro --- ( 5 )
-CAMBIADO: [ madrugar --- 1 ] --- Madrugar por la mañana --- ( 2 )
+CAMBIADO: [ madrugar --- 1 ] --- Madrugar pronto --- ( 2 )
 CAMBIADO: [ desayunar -de-> madrugar ;;; 0 ] --- Desayunar --- ( 3 )
 NO CAMBIADO: gimnasio
-LOCALIZADO: [ madrugar --- 1 ] --- Madrugar por la mañana --- ( 2 )
+LOCALIZADO: [ madrugar --- 1 ] --- Madrugar pronto --- ( 2 )
 LOCALIZADO: [ desayunar -de-> madrugar ;;; 0 ] --- Desayunar --- ( 3 )
 NO LOCALIZADO: gimnasio
 INDEPendiente: madrugar
@@ -24,9 +24,9 @@ INDEPENDIZADO: desayunar
 NO INDEPENDIZADO: gimnasio
 INTENTANDO hacer depend.: desayunar -de-> madrugar
 INTENTANDO hacer depend.: madrugar -de-> madrugar
-LOCALIZADO: [ madrugar --- 1 ] --- Madrugar por la mañana --- ( 2 )
+LOCALIZADO: [ madrugar --- 1 ] --- Madrugar pronto --- ( 2 )
 INTENTANDO hacer depend.: madrugar -de-> desayunar
-LOCALIZADO: [ madrugar -de-> desayunar ;;; 1 ] --- Madrugar por la mañana --- ( 2 )
+LOCALIZADO: [ madrugar -de-> desayunar ;;; 1 ] --- Madrugar pronto --- ( 2 )
 INDEPENDIZADO: madrugar
 IMPOSIBLE hacer depend.: madrugar -de-> entrenar
 IMPOSIBLE hacer depend.: gimnasio -de-> madrugar
