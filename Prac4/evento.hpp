@@ -18,12 +18,20 @@ struct evento;
 */
 void crearEvento(string descripcion, unsigned prioridad, evento& e);
 
-void obtenerDatos(evento& e, string& descripcion, unsigned& prioridad);
+/* Dado un evento 'e' formado como (D,P), devuelve la cadena D, 
+* i.e. la descripción en el evento e.
+*/
+string descripcion(const evento& e);
 
 /* Dado un evento 'e' formado como (D,P), modifica 'e' para que sea igual 
 * al evento compuesto como (nuevaD, P).
 */
 void cambiarDescripcion(evento& e,string nuevaD);
+
+/* Dado un evento 'e' formado como (D,P), devuelve P, 
+* i.e. la prioridad en el evento e.
+*/
+unsigned suPrioridad(const evento& e);
 
 /* Dado un evento 'e' formado como (D,P) y un natural 'nuevaP', 
 * modifica 'e' para que sea igual al evento compuesto como (D, nuevaP).
@@ -36,8 +44,9 @@ void cambiarPrioridad(evento& e,unsigned nuevaP);
 
 struct evento {
   friend void crearEvento(string descripcion, unsigned prioridad, evento& e);
-  friend void obtenerDatos(evento& e, string& descripcion, unsigned& prioridad);
+  friend string descripcion(const evento& e);
   friend void cambiarDescripcion(evento& e,string nuevaD);
+  friend unsigned suPrioridad(const evento& e);
   friend void cambiarPrioridad(evento& e,unsigned nuevaP);
   private:   //declaracion de la representacion interna del tipo
         // Los valores del TAD evento (tuplas (descripción, prioridad))

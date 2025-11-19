@@ -84,8 +84,9 @@ void instruccionO(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
 // No realiza modificaciones, solo consulta el estado del evento.
 // Muestra si un evento es dependiente, independiente o desconocido.
 void instruccionE(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
-    if(existe(nom,ci)) {    // si existe el evento
-        if(existeDependiente(nom,ci)) {
+    bool esDep;
+    if(existe(nom,ci,esDep)) {    // si existe el evento
+        if(esDep) {
             sal << "DEPendiente: ";
         } else {
             sal << "INDEPendiente: ";
@@ -99,8 +100,9 @@ void instruccionE(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
 // Convierte un evento en independiente si no lo es ya.
 // Si el evento no existe, ya era independiente o se ha independizado, se indica en la salida.
 void instruccionI(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
-    if(existe(nom,ci)) { // si existe el evento
-        if(existeIndependiente(nom,ci)) { // era ya independiente
+    bool esDep;
+    if(existe(nom,ci,esDep)) { // si existe el evento
+        if(!esDep) { // era ya independiente
             sal << "YA ERA INDepend.: ";
         } else {    // NO era independiente
             hacerIndependiente(ci,nom);
@@ -115,7 +117,8 @@ void instruccionI(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
 // Intenta establecer una relación de dependencia entre dos eventos.
 // Informa si la operación se ha podido intentar o no.
 void instruccionD(colecInterdep<string,evento> &ci, ofstream &sal, string nom, string nomSup) {
-    if(existe(nom,ci) && existe(nomSup,ci)) {    // existen ambos eventos
+    bool esDep;
+    if(existe(nom,ci,esDep) && existe(nomSup,ci,esDep)) {    // existen ambos eventos
         hacerDependiente(ci,nom,nomSup);
         sal << "INTENTANDO hacer depend.: ";
     } else {    // no existe alguno de los eventos (o ninguno)
