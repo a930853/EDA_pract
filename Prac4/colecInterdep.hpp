@@ -15,8 +15,9 @@
  *  
  * igual: ident s1, ident s2  booleano {devuelve verdad si y solo si s1 es igual que s2.} 
  * anterior: ident s1, ident s2  booleano {devuelve verdad si y solo si s1 es anterior a s2.} 
- * * Género colecInterdep 
- * * {Los valores del TAD representan colecciones de elementos formados como 
+ * 
+ * Género colecInterdep 
+ * {Los valores del TAD representan colecciones de elementos formados como 
  * tuplas de la forma (ident, val, -, NumDepend) o bien (ident, val, identSup, NumDepend). 
  * A los elementos con forma (ident, val, -, NumDepend) los llamaremos en general 
  * ‘elementos independientes’, mientras que a los elementos con forma 
@@ -149,7 +150,21 @@ bool existeSiguiente(colecInterdep<ident,val> ci);
 template<typename ident,typename val>
 bool  siguienteYavanza(colecInterdep<ident,val> ci, ident &id, unsigned &NumDep, val &v, bool &esDep, ident &idSup);
 
-// FIN predeclaracion del TAD GENERICO colecInterdep (Fin INTERFAZ)
+/*-----------------------------------------------------------------
+ * FIN predeclaracion del TAD GENERICO colecInterdep (Fin INTERFAZ)
+ *-----------------------------------------------------------------*/
+
+template<typename ident,typename val>
+typename colecInterdep<ident,val>::Nodo* buscar(typename colecInterdep<ident,val>::Nodo *nodoAux, ident id);
+
+template<typename ident,typename val>
+void insertarNodo(typename colecInterdep<ident,val>::Nodo *nodoAux,ident id,val v, typename colecInterdep<ident,val>::Nodo *nodoSup);
+
+template<typename ident,typename val>
+bool cambiarValor(typename colecInterdep<ident,val>::Nodo *nodoAux, ident id, val v);
+
+template<typename ident,typename val>
+void desengancharMax(typename colecInterdep<ident,val>::Nodo *nodoAux, typename colecInterdep<ident,val>::Nodo *maxNodo);
 
 // DECLARACION DEL TAD GENERICO colecInterdep
 
@@ -162,8 +177,7 @@ struct colecInterdep{
     friend bool existe<ident,val>(ident id,colecInterdep<ident,val> ci, bool esDep);
     friend void anyadirIndependiente<ident,val>(colecInterdep<ident,val> &ci, ident id, val v);
     friend void anyadirDependiente<ident,val>(colecInterdep<ident,val> &ci, ident id, val v, ident idSup);
-    friend void hacerDependiente<ident,val>(colecInterdep<ident,val> &ci, ident id, ident idSup);
-    friend void hacerIndependiente<ident,val>(colecInterdep<ident,val> &ci, ident id);
+    friend void cambiarDependencia<ident,val>(colecInterdep<ident,val> &ci, ident id, ident idSup);
     friend bool actualizarVal<ident,val>(colecInterdep<ident,val> &ci, ident id, val v);
     friend void obtenerDatos<ident,val>(ident id, colecInterdep<ident,val> ci, val &v, ident &idSup,unsigned &NumDep,bool &esDep, bool &error);
     friend void borrar<ident,val>(ident id, colecInterdep<ident,val>& ci);
@@ -174,7 +188,7 @@ struct colecInterdep{
     
     friend void iniciarIterador<ident,val>(colecInterdep<ident,val>& ci);
     friend bool existeSiguiente<ident,val>(colecInterdep<ident,val> ci);
-    friend bool siguienteYavanza<ident,val>(colecInterdep<ident,val> ci, ident &id, unsigned &NumDep, val &v, bool &esDep, ident &idSup)
+    friend bool siguienteYavanza<ident,val>(colecInterdep<ident,val> ci, ident &id, unsigned &NumDep, val &v, bool &esDep, ident &idSup);
 
   private: //declaracion de la representacion interna del tipo
     struct Nodo {
@@ -208,6 +222,14 @@ struct colecInterdep{
      * - Si es NULL, 'existeSiguiente' devuelve falso.
      */
     Pila<Nodo*> iterador;
+
+    friend typename colecInterdep<ident,val>::Nodo* buscar<ident,val>(typename colecInterdep<ident,val>::Nodo *nodoAux, ident id);
+
+    friend void insertarNodo<ident,val>(typename colecInterdep<ident,val>::Nodo *nodoAux,ident id,val v, typename colecInterdep<ident,val>::Nodo *nodoSup);
+
+    friend bool cambiarValor<ident,val>(typename colecInterdep<ident,val>::Nodo *nodoAux, ident id, val v);
+
+    friend void desengancharMax<ident,val>(typename colecInterdep<ident,val>::Nodo *nodoAux, typename colecInterdep<ident,val>::Nodo *maxNodo);
 };
 
 
@@ -303,7 +325,7 @@ void anyadirDependiente(colecInterdep<ident,val> &ci, ident id, val v, ident idS
 
 
 template<typename ident,typename val>
-void hacerDependiente(colecInterdep<ident,val> &ci, ident id, ident idSup) {
+void cambiarDependencia(colecInterdep<ident,val> &ci, ident id, ident idSup) {
     if (id != idSup) {
         typename colecInterdep<ident,val>::Nodo *nodoSup;
         nodoSup = buscar(ci.raiz,idSup);
@@ -318,21 +340,6 @@ void hacerDependiente(colecInterdep<ident,val> &ci, ident id, ident idSup) {
         }
     }
 }
-
-
-template<typename ident,typename val>
-void hacerIndependiente(colecInterdep<ident,val> &ci, ident id) {
-    typename colecInterdep<ident,val>::Nodo *nodoSup;
-        nodoSup = buscar(ci.raiz,idSup);
-    if (nodoSup != nullptr) {
-                nodoAux->NodoDep = nodoSup;
-                nodoSup->NumDepend++;
-            } else {
-                nodoAux->nodoDep->NumDepend--;
-                nodoAux->NodoDep = nullptr;
-            }
-}
-
 
 /*FUNCION AUXILIAR*/
 template<typename ident,typename val>
@@ -376,20 +383,16 @@ bool obtenerDatos(ident id, colecInterdep<ident,val> ci, val &v, ident &idSup,un
 
 /*FUNCION AUXILIAR*/
 template<typename ident,typename val>
-void borrarMax(typename colecInterdep<ident,val>::Nodo *nodoAux, ident& id) {
-    if (nodoAux != nullptr) {
-        if(nodoAux->der == nullptr) {
-            typename colecInterdep<ident,val>::Nodo *nodoAux2;
-            id = nodoAux->id;
-            nodoAux2 = nodoAux;
-            nodoAux->izq = nodoAux;
-            delete nodoAux2;
-            return true;
-        } else {
-            borrarMax(nodoAux->der,id);
-        }
-    } else return false;
+void desengancharMax(typename colecInterdep<ident,val>::Nodo *nodoAux, typename colecInterdep<ident,val>::Nodo *maxNodo) {
+    if(nodoAux->der == nullptr) {
+       maxNodo = nodoAux;
+       nodoAux = nodoAux->izq;
+       maxNodo->izq = nullptr;
+    } else {
+        desengancharMax(nodoAux->der,maxNodo);
+    }
 }
+
 
 template<typename ident,typename val>
 void borrar(ident id, colecInterdep<ident,val> &ci) {
@@ -408,7 +411,7 @@ void borrar(ident id, colecInterdep<ident,val> &ci) {
                 delete nodoAux2;
 
             } else {
-                borrarMax(nodoAux->izq,nodoAux->id);
+                desengancharMax(nodoAux->izq,nodoAux->id);
             }
         
     }
