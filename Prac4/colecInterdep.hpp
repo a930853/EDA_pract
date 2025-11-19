@@ -47,21 +47,21 @@ void crear(colecInterdep<ident,val>& ci);
  * {Devuelve el número de elementos que hay en la colección c.}
  */
 template<typename ident,typename val>
-unsigned tamanyo(colecInterdep<ident,val> ci);
+unsigned tamanyo(const colecInterdep<ident,val> &ci);
 
 /*
  * esVacía?: colecInterdep c -> booleano
  * {Devuelve verdad si y solo si c no contiene ningún elemento.}
  */
 template<typename ident,typename val>
-bool esVacia(colecInterdep<ident,val> ci);
+bool esVacia(const colecInterdep<ident,val> &ci);
 
 /*
  * existe?: ident id, colecInterdep c -> booleano
  * {Devuelve verdad si y solo si en c hay algún elemento con ident igual a id.}
  */
 template<typename ident,typename val>
-bool existe(ident id,colecInterdep<ident,val> ci, bool esDep);
+bool existe(const ident& id,const colecInterdep<ident,val> &ci, bool esDep);
 
 /*
  * añadirIndependiente: colecInterdep c, ident id, val v -> colecInterdep
@@ -69,7 +69,7 @@ bool existe(ident id,colecInterdep<ident,val> ci, bool esDep);
  * independiente (id,v,-,0) a la colección c. En caso contrario, devuelve una colección igual a c.}
  */
 template<typename ident,typename val>
-void anyadirIndependiente(colecInterdep<ident,val> &ci, ident id, val v);
+void anyadirIndependiente(colecInterdep<ident,val> &ci,const ident &id,const val &v);
 
 /*
  * añadirDependiente: colecInterdep c, ident id, val v, ident super -> colecInterdep
@@ -79,26 +79,10 @@ void anyadirIndependiente(colecInterdep<ident,val> &ci, ident id, val v);
  * En cualquier otro caso, devuelve una colección igual a c.}
  */
 template<typename ident,typename val>
-void anyadirDependiente(colecInterdep<ident,val> &ci, ident id, val v, ident idSup);
+void anyadirDependiente(colecInterdep<ident,val> &ci,const ident &id,const val &v,const ident &idSup);
 
-/*
- * hacerDependiente: colecInterdep c, ident id, ident super -> colecInterdep
- * {Si no igual(id,super), existe?(id,c) y existe?(super,c): 
- * si id era independiente, lo convierte en dependiente de super e incrementa el NumDepend de super. 
- * Si id ya era dependiente de supAnt, decrementa el NumDepend de supAnt, lo convierte en dependiente de super e incrementa el NumDepend de super. 
- * En cualquier otro caso, devuelve c sin modificar.}
- */
 template<typename ident,typename val>
-void hacerDependiente(colecInterdep<ident,val> &ci, ident id, ident idSup);
-
-/*
- * hacerIndependiente: colecInterdep c, ident id -> colecInterdep
- * {Si existeDependiente?(id,c, supAnt), devuelve una colección igual a c tras decrementar en 1 el NumDepend de supAnt 
- * y convertir id en un elemento independiente (id, v, -, NumDepend). 
- * En cualquier otro caso, devuelve una colección igual a c.}
- */
-template<typename ident,typename val>
-void hacerIndependiente(colecInterdep<ident,val> &ci, ident id);
+void cambiarDependencia(colecInterdep<ident,val> &ci,const ident &id,const ident &idSup);
 
 /*
  * parcial actualizarVal: colecInterdep c, ident id, val nuevo -> colecInterdep
@@ -106,7 +90,7 @@ void hacerIndependiente(colecInterdep<ident,val> &ci, ident id);
  * Parcial: la operación no está definida si no existe?(id,c).}
  */
 template<typename ident,typename val>
-bool actualizarVal(colecInterdep<ident,val> &ci, ident id, val v);
+bool actualizarVal(colecInterdep<ident,val> &ci,const ident &id,const val &v);
 
 /*
  * parcial obtenerDatos: colecInterdep c, ident id -> (val, ident, natural, booleano)
@@ -115,7 +99,7 @@ bool actualizarVal(colecInterdep<ident,val> &ci, ident id, val v);
  * Parcial: la operación no está definida si no existe?(id,c).}
  */
 template<typename ident,typename val>
-void obtenerDatos(ident id, colecInterdep<ident,val> ci, val &v, ident &idSup,unsigned &NumDep,bool &esDep, bool &error);
+bool obtenerDatos(const ident id, colecInterdep<ident,val> &ci, val &v, ident &idSup,unsigned &NumDep,bool &esDep);
 
 /*
  * borrar: ident id, colecInterdep c -> colecInterdep
@@ -126,7 +110,7 @@ void obtenerDatos(ident id, colecInterdep<ident,val> ci, val &v, ident &idSup,un
  * En cualquier otro caso, devuelve una colección igual a c.}
  */
 template<typename ident,typename val>
-void borrar(ident id, colecInterdep<ident,val> &ci);
+void borrar(const ident &id, colecInterdep<ident,val>& ci);
 
 /*---------------------
  * OPERACIONES ITERADOR
@@ -145,26 +129,26 @@ void iniciarIterador(colecInterdep<ident,val>& ci);
  * {Devuelve verdad si queda algún elemento por visitar con el iterador, falso en caso contrario.}
  */
 template<typename ident,typename val>
-bool existeSiguiente(colecInterdep<ident,val> ci);
+bool existeSiguiente(const colecInterdep<ident,val> &ci);
 
 template<typename ident,typename val>
-bool  siguienteYavanza(colecInterdep<ident,val> ci, ident &id, unsigned &NumDep, val &v, bool &esDep, ident &idSup);
+bool  siguienteYavanza(const colecInterdep<ident,val> &ci, ident &id, unsigned &NumDep, val &v, bool &esDep, ident &idSup);
 
 /*-----------------------------------------------------------------
  * FIN predeclaracion del TAD GENERICO colecInterdep (Fin INTERFAZ)
  *-----------------------------------------------------------------*/
 
 template<typename ident,typename val>
-typename colecInterdep<ident,val>::Nodo* buscar(typename colecInterdep<ident,val>::Nodo *nodoAux, ident id);
+typename colecInterdep<ident,val>::Nodo* buscar(const typename colecInterdep<ident,val>::Nodo *nodoAux,const ident &id);
 
 template<typename ident,typename val>
-void insertarNodo(typename colecInterdep<ident,val>::Nodo *nodoAux,ident id,val v, typename colecInterdep<ident,val>::Nodo *nodoSup);
+void insertarNodo(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v, typename colecInterdep<ident,val>::Nodo *nodoSup);
 
 template<typename ident,typename val>
-bool cambiarValor(typename colecInterdep<ident,val>::Nodo *nodoAux, ident id, val v);
+bool cambiarValor(const typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v);
 
 template<typename ident,typename val>
-void desengancharMax(typename colecInterdep<ident,val>::Nodo *nodoAux, typename colecInterdep<ident,val>::Nodo *maxNodo);
+void desengancharMax(typename colecInterdep<ident,val>::Nodo *&nodoAux, typename colecInterdep<ident,val>::Nodo *maxNodo);
 
 // DECLARACION DEL TAD GENERICO colecInterdep
 
@@ -172,23 +156,23 @@ template<typename ident,typename val>
 struct colecInterdep{
 
     friend void crear<ident,val>(colecInterdep<ident,val>& ci);
-    friend unsigned tamanyo<ident,val>(colecInterdep<ident,val> ci);
-    friend bool esVacia<ident,val>(colecInterdep<ident,val> ci);
-    friend bool existe<ident,val>(ident id,colecInterdep<ident,val> ci, bool esDep);
-    friend void anyadirIndependiente<ident,val>(colecInterdep<ident,val> &ci, ident id, val v);
-    friend void anyadirDependiente<ident,val>(colecInterdep<ident,val> &ci, ident id, val v, ident idSup);
-    friend void cambiarDependencia<ident,val>(colecInterdep<ident,val> &ci, ident id, ident idSup);
-    friend bool actualizarVal<ident,val>(colecInterdep<ident,val> &ci, ident id, val v);
-    friend void obtenerDatos<ident,val>(ident id, colecInterdep<ident,val> ci, val &v, ident &idSup,unsigned &NumDep,bool &esDep, bool &error);
-    friend void borrar<ident,val>(ident id, colecInterdep<ident,val>& ci);
+    friend unsigned tamanyo<ident,val>(const colecInterdep<ident,val> &ci);
+    friend bool esVacia<ident,val>(const colecInterdep<ident,val> &ci);
+    friend bool existe<ident,val>(const ident& id,const colecInterdep<ident,val> &ci, bool esDep);
+    friend void anyadirIndependiente<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const val &v);
+    friend void anyadirDependiente<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const val &v,const ident &idSup);
+    friend void cambiarDependencia<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const ident &idSup);
+    friend bool actualizarVal<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const val &v);
+    friend bool obtenerDatos<ident,val>(const ident id, colecInterdep<ident,val> &ci, val &v, ident &idSup,unsigned &NumDep,bool &esDep);
+    friend void borrar<ident,val>(const ident &id, colecInterdep<ident,val>& ci);
 
     /*---------------------
     * OPERACIONES ITERADOR
     *---------------------*/
     
-    friend void iniciarIterador<ident,val>(colecInterdep<ident,val>& ci);
-    friend bool existeSiguiente<ident,val>(colecInterdep<ident,val> ci);
-    friend bool siguienteYavanza<ident,val>(colecInterdep<ident,val> ci, ident &id, unsigned &NumDep, val &v, bool &esDep, ident &idSup);
+    friend void iniciarIterador<ident,val>(colecInterdep<ident,val> &ci);
+    friend bool existeSiguiente<ident,val>(const colecInterdep<ident,val> &ci);
+    friend bool siguienteYavanza<ident,val>(const colecInterdep<ident,val> &ci, ident &id, unsigned &NumDep, val &v, bool &esDep, ident &idSup);
 
   private: //declaracion de la representacion interna del tipo
     struct Nodo {
@@ -223,13 +207,13 @@ struct colecInterdep{
      */
     Pila<Nodo*> iterador;
 
-    friend typename colecInterdep<ident,val>::Nodo* buscar<ident,val>(typename colecInterdep<ident,val>::Nodo *nodoAux, ident id);
+    friend typename colecInterdep<ident,val>::Nodo* buscar<ident,val>(const typename colecInterdep<ident,val>::Nodo *nodoAux,const ident &id);
 
-    friend void insertarNodo<ident,val>(typename colecInterdep<ident,val>::Nodo *nodoAux,ident id,val v, typename colecInterdep<ident,val>::Nodo *nodoSup);
+    friend void insertarNodo<ident,val>(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v, typename colecInterdep<ident,val>::Nodo *nodoSup);
 
-    friend bool cambiarValor<ident,val>(typename colecInterdep<ident,val>::Nodo *nodoAux, ident id, val v);
+    friend bool cambiarValor<ident,val>(const typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v);
 
-    friend void desengancharMax<ident,val>(typename colecInterdep<ident,val>::Nodo *nodoAux, typename colecInterdep<ident,val>::Nodo *maxNodo);
+    friend void desengancharMax<ident,val>(typename colecInterdep<ident,val>::Nodo *&nodoAux, typename colecInterdep<ident,val>::Nodo *maxNodo);
 };
 
 
@@ -246,14 +230,14 @@ void crear(colecInterdep<ident,val>& ci) {
 
 
 template<typename ident,typename val>
-unsigned tamanyo(colecInterdep<ident,val> ci) {
+unsigned tamanyo(const colecInterdep<ident,val> &ci) {
     // Devuelve el contador de elementos mantenido en la estructura
     return ci.numElementos;
 }
 
 
 template<typename ident,typename val>
-bool esVacia(colecInterdep<ident,val> ci) {
+bool esVacia(const colecInterdep<ident,val> &ci) {
     // Comprueba el puntero de inicio y el contador 
     return ci.raiz == nullptr && ci.numElementos == 0;
 }
@@ -261,7 +245,7 @@ bool esVacia(colecInterdep<ident,val> ci) {
 
 /*FUNCION AUXILIAR*/
 template<typename ident,typename val>
-typename colecInterdep<ident,val>::Nodo* buscar(typename colecInterdep<ident,val>::Nodo *nodoAux, ident id) {
+typename colecInterdep<ident,val>::Nodo* buscar(const typename colecInterdep<ident,val>::Nodo *nodoAux,const ident &id) {
     if (nodoAux == nullptr) {
         return nullptr;
    } else {
@@ -277,7 +261,7 @@ typename colecInterdep<ident,val>::Nodo* buscar(typename colecInterdep<ident,val
 
 
 template<typename ident,typename val>
-bool existe(ident id,colecInterdep<ident,val> ci, bool esDep) {
+bool existe(const ident& id,const colecInterdep<ident,val> &ci, bool esDep) {
     typename colecInterdep<ident,val>::Nodo *nodoAux;
     nodoAux = buscar(ci.raiz,id,esDep);
     return nodoAux != nullptr;
@@ -287,8 +271,7 @@ bool existe(ident id,colecInterdep<ident,val> ci, bool esDep) {
 
 /*FUNCION AUXILIAR*/
 template<typename ident,typename val>
-void insertarNodo(typename colecInterdep<ident,val>::Nodo *nodoAux,ident id,val v, 
-                    typename colecInterdep<ident,val>::Nodo *nodoSup) {
+void insertarNodo(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v, typename colecInterdep<ident,val>::Nodo *nodoSup) {
    if (nodoAux == nullptr) {
         typename colecInterdep<ident,val>::Nodo 
             *nNew = new typename colecInterdep<ident,val>::Nodo;
@@ -303,19 +286,19 @@ void insertarNodo(typename colecInterdep<ident,val>::Nodo *nodoAux,ident id,val 
    } else {
         if(nodoAux->id < id) {
             insertarNodo(nodoAux->izq,id,v,nodoSup);
-        } else if(nodoAux->id > id) {
+        } else if(!(nodoAux->id < id) && !(nodoAux->id == id)) {
             insertarNodo(nodoAux->der,id,v,nodoSup);
         } else {return;} //caso nodoAux->id == id
    }
 }
 
 template<typename ident,typename val>
-void anyadirIndependiente(colecInterdep<ident,val> &ci, ident id, val v) {
+void anyadirIndependiente(colecInterdep<ident,val> &ci,const ident &id,const val &v) {
     insertarNodo(ci.raiz,id,v,nullptr);
 }
 
 template<typename ident,typename val>
-void anyadirDependiente(colecInterdep<ident,val> &ci, ident id, val v, ident idSup) {
+void anyadirDependiente(colecInterdep<ident,val> &ci,const ident &id,const val &v,const ident &idSup) {
     typename colecInterdep<ident,val>::Nodo *nodoSup;
     nodoSup = buscar(ci.raiz,idSup);
     if (nodoSup != nullptr) {
@@ -325,25 +308,40 @@ void anyadirDependiente(colecInterdep<ident,val> &ci, ident id, val v, ident idS
 
 
 template<typename ident,typename val>
-void cambiarDependencia(colecInterdep<ident,val> &ci, ident id, ident idSup) {
-    if (id != idSup) {
+void hacerDependiente(colecInterdep<ident,val> &ci,const ident &id,const ident &idSup) {
+    if (!(id == idSup)) {
         typename colecInterdep<ident,val>::Nodo *nodoSup;
+        typename colecInterdep<ident,val>::Nodo *nodoId;
         nodoSup = buscar(ci.raiz,idSup);
         if (nodoSup != nullptr) {
-            if (nodoSup != nullptr) {
-                nodoAux->NodoDep = nodoSup;
+            nodoId = buscar(ci.raiz,id);
+            if (nodoId != nullptr) {
+                if (nodoId->NodoDep != nullptr) {
+                    nodoId->NodoDep->NumDepend--;
+                }
                 nodoSup->NumDepend++;
-            } else {
-                nodoAux->nodoDep->NumDepend--;
-                nodoAux->NodoDep = nullptr;
+                nodoId->NodoDep = nodoSup;
             }
         }
     }
 }
 
+template<typename ident,typename val>
+void hacerIndependiente(colecInterdep<ident,val> &ci,const ident &id) {
+    typename colecInterdep<ident,val>::Nodo *nodoId;
+    nodoId = buscar(ci.raiz,idSup);
+    if (nodoId != nullptr) {
+        if (nodoId->NodoDep != nullptr) {
+            nodoId->NumDepend--;
+            nodoId->NodoDep = nullptr;
+        }
+    }
+}
+
+
 /*FUNCION AUXILIAR*/
 template<typename ident,typename val>
-bool cambiarValor(typename colecInterdep<ident,val>::Nodo *nodoAux, ident id, val v) {
+bool cambiarValor(const typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v) {
     if (nodoAux == nullptr) {
         return false;
     } else {
@@ -359,13 +357,13 @@ bool cambiarValor(typename colecInterdep<ident,val>::Nodo *nodoAux, ident id, va
 }
 
 template<typename ident,typename val>
-bool actualizarVal(colecInterdep<ident,val> &ci, ident id, val v) {
+bool actualizarVal(colecInterdep<ident,val> &ci,const ident &id,const val &v) {
     return cambiarValor(ci.raiz,id,v);
 }
 
 
 template<typename ident,typename val>
-bool obtenerDatos(ident id, colecInterdep<ident,val> ci, val &v, ident &idSup,unsigned &NumDep,bool &esDep) {
+bool obtenerDatos(const ident id, colecInterdep<ident,val> &ci, val &v, ident &idSup,unsigned &NumDep,bool &esDep) {
     typename colecInterdep<ident,val>::Nodo *nodoAux;
     nodoAux = buscar(ci.raiz,id);
     if (nodoAux != nullptr) {
@@ -383,7 +381,7 @@ bool obtenerDatos(ident id, colecInterdep<ident,val> ci, val &v, ident &idSup,un
 
 /*FUNCION AUXILIAR*/
 template<typename ident,typename val>
-void desengancharMax(typename colecInterdep<ident,val>::Nodo *nodoAux, typename colecInterdep<ident,val>::Nodo *maxNodo) {
+void desengancharMax(typename colecInterdep<ident,val>::Nodo *&nodoAux, typename colecInterdep<ident,val>::Nodo *maxNodo) {
     if(nodoAux->der == nullptr) {
        maxNodo = nodoAux;
        nodoAux = nodoAux->izq;
@@ -395,7 +393,7 @@ void desengancharMax(typename colecInterdep<ident,val>::Nodo *nodoAux, typename 
 
 
 template<typename ident,typename val>
-void borrar(ident id, colecInterdep<ident,val> &ci) {
+void borrar(const ident &id, colecInterdep<ident,val>& ci) {
     typename colecInterdep<ident,val>::Nodo *nodoAux;
     nodoAux = buscar(ci.raiz,id);
     if (nodoAux != nullptr) {
@@ -434,12 +432,12 @@ void iniciarIterador(colecInterdep<ident,val>& ci) {
 
 
 template<typename ident,typename val>
-bool existeSiguiente(colecInterdep<ident,val> ci) {
+bool existeSiguiente(const colecInterdep<ident,val> &ci) {
     return esVacia(ci.iterador);
 }
 
 template<typename ident,typename val>
-bool  siguienteYavanza(colecInterdep<ident,val> ci, ident &id, unsigned &NumDep, val &v, bool &esDep, ident &idSup) {
+bool  siguienteYavanza(const colecInterdep<ident,val> &ci, ident &id, unsigned &NumDep, val &v, bool &esDep, ident &idSup) {
     if (existeSiguiente(ci)) {
         typename colecInterdep<ident,val>::Nodo *nodoAux;
         bool error;
