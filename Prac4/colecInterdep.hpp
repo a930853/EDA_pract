@@ -82,7 +82,10 @@ template<typename ident,typename val>
 void anyadirDependiente(colecInterdep<ident,val> &ci,const ident &id,const val &v,const ident &idSup);
 
 template<typename ident,typename val>
-void cambiarDependencia(colecInterdep<ident,val> &ci,const ident &id,const ident &idSup);
+void hacerDependiente(colecInterdep<ident,val> &ci,const ident &id,const ident &idSup);
+
+template<typename ident,typename val>
+void hacerIndependiente(colecInterdep<ident,val> &ci,const ident &id);
 
 /*
  * parcial actualizarVal: colecInterdep c, ident id, val nuevo -> colecInterdep
@@ -142,7 +145,7 @@ template<typename ident,typename val>
 typename colecInterdep<ident,val>::Nodo* buscar(const typename colecInterdep<ident,val>::Nodo *nodoAux,const ident &id);
 
 template<typename ident,typename val>
-void insertarNodo(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v, typename colecInterdep<ident,val>::Nodo *nodoSup);
+void insertarNodo(colecInterdep<ident,val> &ci,typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v, typename colecInterdep<ident,val>::Nodo *nodoSup);
 
 template<typename ident,typename val>
 bool cambiarValor(const typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v);
@@ -161,7 +164,8 @@ struct colecInterdep{
     friend bool existe<ident,val>(const ident& id,const colecInterdep<ident,val> &ci, bool esDep);
     friend void anyadirIndependiente<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const val &v);
     friend void anyadirDependiente<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const val &v,const ident &idSup);
-    friend void cambiarDependencia<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const ident &idSup);
+    friend void hacerDependiente<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const ident &idSup);
+    friend void hacerIndependiente<ident,val>(colecInterdep<ident,val> &ci,const ident &id)
     friend bool actualizarVal<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const val &v);
     friend bool obtenerDatos<ident,val>(const ident id, colecInterdep<ident,val> &ci, val &v, ident &idSup,unsigned &NumDep,bool &esDep);
     friend void borrar<ident,val>(const ident &id, colecInterdep<ident,val>& ci);
@@ -209,7 +213,7 @@ struct colecInterdep{
 
     friend typename colecInterdep<ident,val>::Nodo* buscar<ident,val>(const typename colecInterdep<ident,val>::Nodo *nodoAux,const ident &id);
 
-    friend void insertarNodo<ident,val>(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v, typename colecInterdep<ident,val>::Nodo *nodoSup);
+    friend void insertarNodo<ident,val>(colecInterdep<ident,val> &ci,typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v, typename colecInterdep<ident,val>::Nodo *nodoSup);
 
     friend bool cambiarValor<ident,val>(const typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v);
 
@@ -249,7 +253,7 @@ typename colecInterdep<ident,val>::Nodo* buscar(const typename colecInterdep<ide
     if (nodoAux == nullptr) {
         return nullptr;
    } else {
-        if(nodoAux->id < idSup) {
+        if(nodoAux->id < id) {
             return buscar(nodoAux->izq,id);
         } else if(nodoAux->id == id) {
             return nodoAux;
@@ -263,7 +267,7 @@ typename colecInterdep<ident,val>::Nodo* buscar(const typename colecInterdep<ide
 template<typename ident,typename val>
 bool existe(const ident& id,const colecInterdep<ident,val> &ci, bool esDep) {
     typename colecInterdep<ident,val>::Nodo *nodoAux;
-    nodoAux = buscar(ci.raiz,id,esDep);
+    nodoAux = buscar(ci.raiz,id);
     return nodoAux != nullptr;
 }
 
@@ -271,7 +275,7 @@ bool existe(const ident& id,const colecInterdep<ident,val> &ci, bool esDep) {
 
 /*FUNCION AUXILIAR*/
 template<typename ident,typename val>
-void insertarNodo(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v, typename colecInterdep<ident,val>::Nodo *nodoSup) {
+void insertarNodo(colecInterdep<ident,val> &ci,typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v, typename colecInterdep<ident,val>::Nodo *nodoSup) {
    if (nodoAux == nullptr) {
         typename colecInterdep<ident,val>::Nodo 
             *nNew = new typename colecInterdep<ident,val>::Nodo;
@@ -294,7 +298,7 @@ void insertarNodo(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident 
 
 template<typename ident,typename val>
 void anyadirIndependiente(colecInterdep<ident,val> &ci,const ident &id,const val &v) {
-    insertarNodo(ci.raiz,id,v,nullptr);
+    insertarNodo(ci,ci.raiz,id,v,nullptr);
 }
 
 template<typename ident,typename val>
@@ -302,7 +306,7 @@ void anyadirDependiente(colecInterdep<ident,val> &ci,const ident &id,const val &
     typename colecInterdep<ident,val>::Nodo *nodoSup;
     nodoSup = buscar(ci.raiz,idSup);
     if (nodoSup != nullptr) {
-        insertarNodo(ci.raiz,id,v,nodoSup);
+        insertarNodo(ci,ci.raiz,id,v,nodoSup);
     }
 }
 
@@ -329,7 +333,7 @@ void hacerDependiente(colecInterdep<ident,val> &ci,const ident &id,const ident &
 template<typename ident,typename val>
 void hacerIndependiente(colecInterdep<ident,val> &ci,const ident &id) {
     typename colecInterdep<ident,val>::Nodo *nodoId;
-    nodoId = buscar(ci.raiz,idSup);
+    nodoId = buscar(ci.raiz);
     if (nodoId != nullptr) {
         if (nodoId->NodoDep != nullptr) {
             nodoId->NumDepend--;
@@ -367,10 +371,10 @@ bool obtenerDatos(const ident id, colecInterdep<ident,val> &ci, val &v, ident &i
     typename colecInterdep<ident,val>::Nodo *nodoAux;
     nodoAux = buscar(ci.raiz,id);
     if (nodoAux != nullptr) {
-        NumDep = nAux->NumDepend;
-        v = nAux->v;
-        if (nAux->NodoDep != nullptr) {
-            idSup = nAux->NodoDep->id;
+        NumDep = nodoAux->NumDepend;
+        v = nodoAux->v;
+        if (nodoAux->NodoDep != nullptr) {
+            idSup = nodoAux->NodoDep->id;
             esDep = true;
         } else { 
             esDep = false;
@@ -396,20 +400,31 @@ template<typename ident,typename val>
 void borrar(const ident &id, colecInterdep<ident,val>& ci) {
     typename colecInterdep<ident,val>::Nodo *nodoAux;
     nodoAux = buscar(ci.raiz,id);
-    if (nodoAux != nullptr) {
+    if (nodoAux != nullptr && nodoAux->NumDepend == 0) {
+
+        if (nodoAux->NodoDep != nullptr) {
+            nodoAux->NodoDep->NumDepend--;
+        }
+
         typename colecInterdep<ident,val>::Nodo *nodoAux2;
             if (nodoAux->izq == nullptr) {
                 nodoAux2 = nodoAux;
-                nodoAux->der = nodoAux;
+                nodoAux = nodoAux->der;
                 delete nodoAux2;
 
             } else if (nodoAux->der == nullptr) {
                 nodoAux2 = nodoAux;
-                nodoAux->izq = nodoAux;
+                nodoAux = nodoAux->izq;
                 delete nodoAux2;
 
             } else {
-                desengancharMax(nodoAux->izq,nodoAux->id);
+                typename colecInterdep<ident,val>::Nodo *nodoMax;
+                desengancharMax(nodoAux->izq,nodoMax);
+                nodoMax->izq = nodoAux->izq;
+                nodoMax->der = nodoAux->der;
+                nodoAux2 = nodoAux;
+                nodoAux = nodoMax;
+                delete nodoAux2;
             }
         
     }
@@ -443,13 +458,13 @@ bool  siguienteYavanza(const colecInterdep<ident,val> &ci, ident &id, unsigned &
         bool error;
         cima(ci.iterador,nodoAux,error);
         if (!error) {
-            NumDep = ci.iterador->NumDepend;
-            v = ci.nodoAux->v;
-            id = ci.nodoAux->id;
+            NumDep = nodoAux->NumDepend;
+            v = nodoAux->v;
+            id = nodoAux->id;
 
-            if (ci.nodoAux->NodoDep != nullptr) {
+            if (nodoAux->NodoDep != nullptr) {
                 esDep = true;
-                idSup = ci.nodoAux->NodoDep->id;
+                idSup = nodoAux->NodoDep->id;
             } else esDep = false;
             desapilar(ci.iterador);
             nodoAux = nodoAux->der;
