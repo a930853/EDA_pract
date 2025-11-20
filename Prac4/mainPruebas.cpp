@@ -41,21 +41,23 @@ void instruccionA(colecInterdep<string,evento> &ci, ofstream &sal, string nom, s
 // Indica si el cambio se realizó correctamente o si no
 void instruccionC(colecInterdep<string,evento> &ci, ofstream &sal, string nom, string desc, unsigned prio) {
     evento e;
-    bool esDep,error;
+    bool esDep;
     unsigned NumDep;
     string nomSup;
 
     cambiarDescripcion(e,desc);
     cambiarPrioridad(e,prio);
-    actualizarVal(ci,nom,e,error);   
-    if(!error) { // si se ha podido actualizar el evento 
-        obtenerDatos(nom,ci,e,nomSup,NumDep,esDep,error);
-        if(!error && esDep) {  // si es dependiente
-            sal << "CAMBIADO: [ " << nom << " -de-> " << nomSup << " ;;; " << NumDep << " ] --- " << desc << " --- ( " << prio << " )" << endl;
-        } else { 
-            sal << "CAMBIADO: [ " << nom << " --- " << NumDep << " ] --- " << desc << " --- ( " << prio << " )" << endl;
-        }   
-    } else { // si es independiente
+    if(actualizarVal(ci,nom,e)) { // si se ha podido actualizar el evento 
+        if(obtenerDatos(nom,ci,e,nomSup,NumDep,esDep)) { // si se han podido obtener los datos
+            if(esDep) {  // si es dependiente
+                sal << "CAMBIADO: [ " << nom << " -de-> " << nomSup << " ;;; " << NumDep << " ] --- " << desc << " --- ( " << prio << " )" << endl;
+            } else { // si es independiente
+                sal << "CAMBIADO: [ " << nom << " --- " << NumDep << " ] --- " << desc << " --- ( " << prio << " )" << endl;
+            }  
+        } else { // si falla obtenerDatos
+            sal <<  "NO CAMBIADO: " << nom << endl;
+        }
+    } else { // si falla actualizarVal 
         sal <<  "NO CAMBIADO: " << nom << endl;
     }       
 }
@@ -65,18 +67,18 @@ void instruccionC(colecInterdep<string,evento> &ci, ofstream &sal, string nom, s
 void instruccionO(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
     evento e;
     unsigned NumDep;
-    bool esDep,error;
+    bool esDep;
     string nomSup;
-    obtenerDatos(nom,ci,e,nomSup,NumDep,esDep,error);
-    if(!error) {
-        if(!error && esDep) { // si se ha obtenido el supervisor
+
+    if(obtenerDatos(nom,ci,e,nomSup,NumDep,esDep)) { // si se han podido obtener los datos
+        if(esDep) { // si es dependiente
             sal << "LOCALIZADO: " << "[ " << nom << " -de-> " << nomSup << " ;;; " << NumDep 
             << " ] --- " << descripcion(e) << " --- ( " << suPrioridad(e) << " )" << endl;
-        } else { 
+        } else { // si es independiente
             sal << "LOCALIZADO: " << "[ " << nom << " --- " << NumDep << " ] --- " << descripcion(e) 
             << " --- ( " << suPrioridad(e) << " )"<< endl;
         }
-    } else { // si es independiente
+    } else { // si falla obtenerDatos
         sal << "NO LOCALIZADO: " << nom << endl;
     }
 }
@@ -86,9 +88,9 @@ void instruccionO(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
 void instruccionE(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
     bool esDep;
     if(existe(nom,ci,esDep)) {    // si existe el evento
-        if(esDep) {
+        if(esDep) { // si es dependiente
             sal << "DEPendiente: ";
-        } else {
+        } else { // si es independiente
             sal << "INDEPendiente: ";
         }
     } else {    // si no existe el evento
@@ -142,12 +144,12 @@ void instruccionB(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
 void instruccionLD(colecInterdep<string,evento> &ci, ofstream &sal, string nom) {
     evento e;
     unsigned NumDep,prio;
-    bool esDep,error;
+    bool esDep;
     string nomSup,nomAux,desc;
     sal << "****DEPENDIENTES: " << nom << endl;
     nomAux = nom;
-    obtenerDatos(nom,ci,e,nomSup,NumDep,esDep,error);       // obtenemos los datos del evento principal
-    if (!error) {
+         
+    if(obtenerDatos(nom,ci,e,nomSup,NumDep,esDep)) { // si se han podido obtener los datos
         desc = descripcion(e);
         prio = suPrioridad(e);
         if (esDep) {    // si es dependiente
@@ -157,27 +159,21 @@ void instruccionLD(colecInterdep<string,evento> &ci, ofstream &sal, string nom) 
             sal << "[ " << nom << " --- " << NumDep << " ]" << " --- " 
             << desc << " --- ( " << prio << " ) ****" << endl;         
         }
-        iniciarIterador(ci);            // recorremos la colección buscando dependientes
+        iniciarIterador(ci);            
         unsigned i = 1;
-        while (existeSiguiente(ci)) {
-            if (!error) {siguienteSuperior(ci,nomSup,error);
-            if (nomSup == nomAux) {
-                if (!error) {siguienteIdent(ci,nom,error);}
-                if (!error) {siguienteNumDependientes(ci,NumDep,error);}
-                if (!error) {siguienteVal(ci,e,error);}
-                if (!error) {
+        while (existeSiguiente(ci)) { // recorremos la colección buscando dependientes
+            if(siguienteYavanza(ci,nom,NumDep,e,esDep,nomSup)) {
+                if (esDep && nomSup == nomAux) {
                     desc = descripcion(e);
                     prio = suPrioridad(e);
                     sal << "[" << i << " -> " << nom << " -de-> " << nomSup << " ;;; " << NumDep 
-                        << " ]" << " --- " << desc << " --- ( " << prio << " ) ;;;;" << endl;
+                    << " ]" << " --- " << desc << " --- ( " << prio << " ) ;;;;" << endl;
                     i++;
                 }
-                }   
-            }
-            avanza(ci,error);
-        } 
-                sal << "****FINAL dependientes -de-> " << nomAux << endl;
-    } else {
+            }  
+        }
+        sal << "****FINAL dependientes -de-> " << nomAux << endl;       
+    } else { // si falla obtenerDatos
         sal << "****DESCONOCIDO " << endl;
     }
 }
@@ -187,30 +183,25 @@ void instruccionLD(colecInterdep<string,evento> &ci, ofstream &sal, string nom) 
 void instruccionLT(colecInterdep<string,evento> &ci, ofstream &sal) {
     evento e;
     unsigned NumDep,prio;
-    bool esDep,error;
+    bool esDep;
     string nomSup,nom,desc;
-     sal << "-----LISTADO: " << tamanyo(ci) << endl;
-            iniciarIterador(ci);
-            error = false;
-            while (existeSiguiente(ci) && !error) {     // recorremos todos los eventos de la colección
-                if(!error) {siguienteDependiente(ci,esDep,error);}
-                if(!error) {siguienteIdent(ci,nom,error);}
-                if(!error) {siguienteNumDependientes(ci,NumDep,error);}
-                if(!error) {siguienteVal(ci,e,error);
-                    desc = descripcion(e);
-                    prio = suPrioridad(e);
-                }
-                if (esDep && !error) {  // si es dependiente
-                    siguienteSuperior(ci,nomSup,error);
-                    sal << "[ " << nom << " -de-> " << nomSup << " ;;; " << NumDep 
-                    << " ]" << " --- " << desc << " --- ( " << prio << " )" << endl;
-                } else if (!error){     // si es independiente
-                    sal << "[ " << nom << " --- " << NumDep << " ]" << " --- " 
-                    << desc << " --- ( " << prio << " )" << endl;
-                }
-                avanza(ci,error);
+    sal << "-----LISTADO: " << tamanyo(ci) << endl;
+    iniciarIterador(ci);
+    while (existeSiguiente(ci)) {     // recorremos todos los eventos de la colección
+        if(siguienteYavanza(ci,nom,NumDep,e,esDep,nomSup)) {
+            desc = descripcion(e);
+            prio = suPrioridad(e);
+        
+            if (esDep) {    // si es dependiente
+                sal << "[ " << nom << " -de-> " << nomSup << " ;;; " << NumDep 
+                << " ]" << " --- " << desc << " --- ( " << prio << " )" << endl;
+            } else {    // si es independiente
+                sal << "[ " << nom << " --- " << NumDep << " ]" << " --- " 
+                << desc << " --- ( " << prio << " )" << endl;
             }
-            sal << "-----" << endl;
+        }
+    }
+    sal << "-----" << endl;
 }
 
 int main() {

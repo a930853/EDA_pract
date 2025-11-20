@@ -165,7 +165,7 @@ struct colecInterdep{
     friend void anyadirIndependiente<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const val &v);
     friend void anyadirDependiente<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const val &v,const ident &idSup);
     friend void hacerDependiente<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const ident &idSup);
-    friend void hacerIndependiente<ident,val>(colecInterdep<ident,val> &ci,const ident &id)
+    friend void hacerIndependiente<ident,val>(colecInterdep<ident,val> &ci,const ident &id);
     friend bool actualizarVal<ident,val>(colecInterdep<ident,val> &ci,const ident &id,const val &v);
     friend bool obtenerDatos<ident,val>(const ident id, colecInterdep<ident,val> &ci, val &v, ident &idSup,unsigned &NumDep,bool &esDep);
     friend void borrar<ident,val>(const ident &id, colecInterdep<ident,val>& ci);
