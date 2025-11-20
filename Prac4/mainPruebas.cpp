@@ -218,7 +218,7 @@ int main() {
         return 1;
     }
 
-    sal.open("salida.txt"); // abrimos el fichero de salida
+    sal.open("salidaPrueba.txt"); // abrimos el fichero de salida
     if(!sal.is_open()) {
         cerr << "No se pudo abrir el archivo salida." << endl;
         return 1;
