@@ -102,6 +102,7 @@ Entrenar duro
 4
 DEPendiente
 gimnasio
+LT
 B
 comer
 B
