@@ -20,7 +20,7 @@ void instruccionA(colecInterdep<string,evento> &ci, ofstream &sal, string nom, s
         anyadirDependiente(ci,nom,e,nomSup);
         if(tamPrev < tamanyo(ci)) {    // si se ha añadido bien
             sal << "INTRODUCIDO: ";
-        } else {
+        } else {    // si no se ha podido añadir
             sal << "NO INTRODUCIDO: ";
         }
         sal << "[ " << nom << " -de-> " << nomSup << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
@@ -30,7 +30,7 @@ void instruccionA(colecInterdep<string,evento> &ci, ofstream &sal, string nom, s
 
         if(tamPrev < tamanyo(ci)) {    // si se ha añadido bien
             sal << "INTRODUCIDO: ";
-        } else {
+        } else {    // si no se ha podido añadir
             sal << "NO INTRODUCIDO: ";
         }
             sal << "[ " << nom << " ]" << " --- " << desc << " --- " << "( " << prio << " )" << endl;
