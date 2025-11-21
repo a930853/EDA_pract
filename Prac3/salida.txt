@@ -33,6 +33,12 @@ IMPOSIBLE hacer depend.: gimnasio -de-> madrugar
 IMPOSIBLE hacer depend.: gimnasio -de-> entrenar
 INTRODUCIDO: [ gimnasio ] --- Ir al gimnasio --- ( 3 )
 INTRODUCIDO: [ entrenar -de-> gimnasio ] --- Entrenar duro --- ( 4 )
+-----LISTADO: 4
+[ desayunar -de-> madrugar ;;; 0 ] --- Desayunar --- ( 3 )
+[ entrenar -de-> gimnasio ;;; 0 ] --- Entrenar duro --- ( 4 )
+[ gimnasio --- 1 ] --- Ir al gimnasio --- ( 3 )
+[ madrugar --- 1 ] --- Madrugar pronto --- ( 2 )
+-----
 NO BORRADO: comer
 NO BORRADO: madrugar
 BORRADO: desayunar
