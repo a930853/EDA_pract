@@ -1,0 +1,87 @@
+-----LISTADO: 0
+-----
+INTRODUCIDO: [ madrugar ] --- Madrugar --- ( 2 )
+-----LISTADO: 1
+[ madrugar --- 0 ] --- Madrugar --- ( 2 )
+-----
+BORRADO: madrugar
+-----LISTADO: 0
+-----
+INTRODUCIDO: [ madrugar ] --- Madrugar --- ( 2 )
+INTRODUCIDO: [ levantarse ] --- Levantarse de la cama --- ( 2 )
+INTRODUCIDO: [ desayunar -de-> levantarse ] --- Desayunar --- ( 4 )
+-----LISTADO: 3
+[ desayunar -de-> levantarse ;;; 0 ] --- Desayunar --- ( 4 )
+[ levantarse --- 1 ] --- Levantarse de la cama --- ( 2 )
+[ madrugar --- 0 ] --- Madrugar --- ( 2 )
+-----
+BORRADO: madrugar
+-----LISTADO: 2
+[ desayunar -de-> levantarse ;;; 0 ] --- Desayunar --- ( 4 )
+[ levantarse --- 1 ] --- Levantarse de la cama --- ( 2 )
+-----
+INTRODUCIDO: [ madrugar -de-> desayunar ] --- Madrugar --- ( 2 )
+NO INTRODUCIDO: [ madrugar -de-> levantarse ] --- Madrugar --- ( 2 )
+NO INTRODUCIDO: [ madrugar -de-> madrugar ] --- Madrugar --- ( 2 )
+NO INTRODUCIDO: [ gimnasio -de-> entrenar ] --- Ir al gimnasio --- ( 1 )
+NO INTRODUCIDO: [ entrenar -de-> entrenar ] --- Entrenar duro --- ( 5 )
+CAMBIADO: [ madrugar -de-> desayunar ;;; 0 ] --- Madrugar pronto --- ( 2 )
+CAMBIADO: [ desayunar -de-> levantarse ;;; 1 ] --- Desayunar --- ( 3 )
+NO CAMBIADO: gimnasio
+LOCALIZADO: [ madrugar -de-> desayunar ;;; 0 ] --- Madrugar pronto --- ( 2 )
+LOCALIZADO: [ desayunar -de-> levantarse ;;; 1 ] --- Desayunar --- ( 3 )
+NO LOCALIZADO: gimnasio
+DEPendiente: madrugar
+DEPendiente: desayunar
+DESCONOCIDO: gimnasio
+INDEPENDIZADO: madrugar
+INDEPENDIZADO: desayunar
+NO INDEPENDIZADO: gimnasio
+INTENTANDO hacer depend.: desayunar -de-> madrugar
+INTENTANDO hacer depend.: madrugar -de-> madrugar
+LOCALIZADO: [ madrugar --- 1 ] --- Madrugar pronto --- ( 2 )
+INTENTANDO hacer depend.: madrugar -de-> desayunar
+LOCALIZADO: [ madrugar -de-> desayunar ;;; 1 ] --- Madrugar pronto --- ( 2 )
+INDEPENDIZADO: madrugar
+IMPOSIBLE hacer depend.: madrugar -de-> entrenar
+IMPOSIBLE hacer depend.: gimnasio -de-> madrugar
+IMPOSIBLE hacer depend.: gimnasio -de-> entrenar
+INTRODUCIDO: [ gimnasio ] --- Ir al gimnasio --- ( 3 )
+INTRODUCIDO: [ entrenar -de-> gimnasio ] --- Entrenar duro --- ( 4 )
+-----LISTADO: 5
+[ desayunar -de-> madrugar ;;; 0 ] --- Desayunar --- ( 3 )
+[ entrenar -de-> gimnasio ;;; 0 ] --- Entrenar duro --- ( 4 )
+[ gimnasio --- 1 ] --- Ir al gimnasio --- ( 3 )
+[ levantarse --- 0 ] --- Levantarse de la cama --- ( 2 )
+[ madrugar --- 1 ] --- Madrugar pronto --- ( 2 )
+-----
+NO BORRADO: comer
+NO BORRADO: madrugar
+BORRADO: desayunar
+BORRADO: madrugar
+****DEPENDIENTES: gimnasio
+[ gimnasio --- 1 ] --- Ir al gimnasio --- ( 3 ) ****
+[1 -> entrenar -de-> gimnasio ;;; 0 ] --- Entrenar duro --- ( 4 ) ;;;;
+****FINAL dependientes -de-> gimnasio
+BORRADO: entrenar
+****DEPENDIENTES: gimnasio
+[ gimnasio --- 0 ] --- Ir al gimnasio --- ( 3 ) ****
+****FINAL dependientes -de-> gimnasio
+****DEPENDIENTES: comer
+****DESCONOCIDO 
+INTRODUCIDO: [ universidad ] --- Ir a la universidad --- ( 2 )
+INTRODUCIDO: [ estudiar -de-> universidad ] --- Estudiar en la biblioteca --- ( 4 )
+INTENTANDO hacer depend.: gimnasio -de-> estudiar
+INTRODUCIDO: [ entrenar -de-> estudiar ] --- Entrenar duro --- ( 1 )
+****DEPENDIENTES: estudiar
+[ estudiar -de-> universidad ;;; 2 ] --- Estudiar en la biblioteca --- ( 4 ) ****
+[1 -> entrenar -de-> estudiar ;;; 0 ] --- Entrenar duro --- ( 1 ) ;;;;
+[2 -> gimnasio -de-> estudiar ;;; 0 ] --- Ir al gimnasio --- ( 3 ) ;;;;
+****FINAL dependientes -de-> estudiar
+-----LISTADO: 5
+[ entrenar -de-> estudiar ;;; 0 ] --- Entrenar duro --- ( 1 )
+[ estudiar -de-> universidad ;;; 2 ] --- Estudiar en la biblioteca --- ( 4 )
+[ gimnasio -de-> estudiar ;;; 0 ] --- Ir al gimnasio --- ( 3 )
+[ levantarse --- 0 ] --- Levantarse de la cama --- ( 2 )
+[ universidad --- 1 ] --- Ir a la universidad --- ( 2 )
+-----
