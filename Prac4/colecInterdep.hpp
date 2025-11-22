@@ -6,10 +6,6 @@
 #define COLECINTERDEP_HPP
 #include "pila.hpp"
 
-/* Módulo que implementa el TAD colecInterdep (Colección de elementos interdependientes) en memoria dinámica.
-   Se basa en un Árbol Binario de Búsqueda (ABB) para almacenar los elementos ordenados por su identificador.
-*/
-
 /* INICIO DE LA PARTE PÚBLICA o INTERFAZ  */
 
 /* Los valores del TAD genérico colecInterdep representan colecciones de elementos formados como 
@@ -145,23 +141,16 @@ bool  siguienteYavanza(colecInterdep<ident,val> &ci, ident &id, unsigned &NumDep
 
 // Búsqueda recursiva en el ABB. Devuelve puntero al nodo o nullptr.
 template<typename ident,typename val>
-typename colecInterdep<ident,val>::Nodo* buscar(typename colecInterdep<ident,val>::Nodo *nodoAux,const ident &id);
+typename colecInterdep<ident,val>::Nodo*& buscar(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id);
 
 // Inserción recursiva ordenada en el ABB.
 template<typename ident,typename val>
 void insertarNodo(colecInterdep<ident,val> &ci,typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v, typename colecInterdep<ident,val>::Nodo *nodoSup);
 
-// Búsqueda recursiva para modificación de valor.
-template<typename ident,typename val>
-bool cambiarValor(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v);
-
 // Auxiliar para el borrado: busca el máximo del subárbol izquierdo para reemplazar al nodo borrado.
 template<typename ident,typename val>
 void desengancharMax(typename colecInterdep<ident,val>::Nodo *&nodoAux, typename colecInterdep<ident,val>::Nodo *&maxNodo);
 
-// Borrado recursivo en el ABB. Maneja los casos de 0, 1 o 2 hijos.
-template<typename ident,typename val>
-void eliminarNodo(colecInterdep<ident,val>& ci, typename colecInterdep<ident,val>::Nodo *&nodoAux, const ident &id);
 
 // DECLARACION DEL TAD GENERICO colecInterdep
 
@@ -225,12 +214,9 @@ struct colecInterdep{
     Pila<Nodo*> iterador;   
 
     // Friends auxiliares (sin const para permitir modificación interna a través de los punteros devueltos)
-    friend typename colecInterdep<ident,val>::Nodo* buscar<ident,val>(typename colecInterdep<ident,val>::Nodo *nodoAux,const ident &id);
-
+    friend typename colecInterdep<ident,val>::Nodo*& buscar<ident,val>(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id);
     friend void insertarNodo<ident,val>(colecInterdep<ident,val> &ci,typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v, typename colecInterdep<ident,val>::Nodo *nodoSup);
-    friend bool cambiarValor<ident,val>(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v);
     friend void desengancharMax<ident,val>(typename colecInterdep<ident,val>::Nodo *&nodoAux, typename colecInterdep<ident,val>::Nodo *&maxNodo);
-    friend void eliminarNodo<ident,val>(colecInterdep<ident,val>& ci, typename colecInterdep<ident,val>::Nodo *&nodoAux, const ident &id);
 };
 
 
@@ -265,9 +251,9 @@ bool esVacia(const colecInterdep<ident,val> &ci) {
  * Devuelve un puntero al nodo encontrado o nullptr si no existe.
  */
 template<typename ident,typename val>
-typename colecInterdep<ident,val>::Nodo* buscar(typename colecInterdep<ident,val>::Nodo *nodoAux,const ident &id) {
+typename colecInterdep<ident,val>::Nodo*& buscar(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id) {
     if (nodoAux == nullptr) {   
-        return nullptr;
+        return nodoAux;
    } else {
         if(nodoAux->id < id) {
             // Si el id del nodo actual es menor que el buscado, buscamos en la derecha (elementos mayores)
@@ -288,7 +274,7 @@ template<typename ident,typename val>
 bool existe(const ident& id, colecInterdep<ident,val> &ci, bool &esDep) {
     typename colecInterdep<ident,val>::Nodo *nodoAux;   
     nodoAux = buscar<ident,val>(ci.raiz,id);    
-    if (nodoAux != nullptr) {   
+    if (nodoAux != nullptr) {   //Caso de nodo encontrado
         esDep = (nodoAux->NodoDep != nullptr);     
     }
     return nodoAux != nullptr;
@@ -340,7 +326,7 @@ template<typename ident,typename val>
 void anyadirDependiente(colecInterdep<ident,val> &ci,const ident &id,const val &v,const ident &idSup) {
     typename colecInterdep<ident,val>::Nodo *nodoSup;
     nodoSup = buscar<ident,val>(ci.raiz,idSup); 
-    if (nodoSup != nullptr) {   
+    if (nodoSup != nullptr) {   // si existe supervisor
         insertarNodo<ident,val>(ci,ci.raiz,id,v,nodoSup);
     }
 }
@@ -350,16 +336,16 @@ void anyadirDependiente(colecInterdep<ident,val> &ci,const ident &id,const val &
 template<typename ident,typename val>
 void hacerDependiente(colecInterdep<ident,val> &ci,const ident &id,const ident &idSup) {
     if (!(id == idSup)) { 
-        typename colecInterdep<ident,val>::Nodo *nodoSup;
-        typename colecInterdep<ident,val>::Nodo *nodoId;
+        typename colecInterdep<ident,val>::Nodo *nodoSup;   //Punteros de busqueda
         
         nodoSup = buscar<ident,val>(ci.raiz,idSup);
 
-        if (nodoSup != nullptr) {   
+        if (nodoSup != nullptr) {   //Si existe supervisor
+            typename colecInterdep<ident,val>::Nodo *nodoId;
             nodoId = buscar<ident,val>(ci.raiz,id);
 
-            if (nodoId != nullptr) {    
-                if (nodoId->NodoDep != nullptr) {   
+            if (nodoId != nullptr) {    //Si existe supervisor y el Id a cambiar
+                if (nodoId->NodoDep != nullptr) {   //Decrementamos NumDependientes del Sup anterior en caso de que tuviera
                     nodoId->NodoDep->NumDepend--;
                 }
                 nodoSup->NumDepend++;
@@ -375,7 +361,7 @@ template<typename ident,typename val>
 void hacerIndependiente(colecInterdep<ident,val> &ci,const ident &id) {
     typename colecInterdep<ident,val>::Nodo *nodoId;
     nodoId = buscar<ident,val>(ci.raiz, id); 
-    if (nodoId != nullptr) {    
+    if (nodoId != nullptr) {    //Nodo encontrado
         if (nodoId->NodoDep != nullptr) {
             nodoId->NodoDep->NumDepend--;
             nodoId->NodoDep = nullptr;
@@ -384,29 +370,18 @@ void hacerIndependiente(colecInterdep<ident,val> &ci,const ident &id) {
 }
 
 
-/*FUNCION AUXILIAR CAMBIARVALOR*/
-template<typename ident,typename val>
-bool cambiarValor(typename colecInterdep<ident,val>::Nodo *&nodoAux,const ident &id,const val &v) {
-    if (nodoAux == nullptr) {   
-        return false;
-    } else {
-        if(nodoAux->id < id) {
-            return cambiarValor<ident,val>(nodoAux->der,id,v);
-        } else if(nodoAux->id == id) {
-            nodoAux->v = v; 
-            return true;
-        } else {
-            return cambiarValor<ident,val>(nodoAux->izq,id,v);
-        }
-    }
-}
 
 /* Actualiza el valor asociado al elemento 'id' con el nuevo valor 'v'.
    Devuelve true si se realizó la actualización, false si 'id' no existe.
 */
 template<typename ident,typename val>
 bool actualizarVal(colecInterdep<ident,val> &ci,const ident &id,const val &v) {
-    return cambiarValor<ident,val>(ci.raiz,id,v);
+    typename colecInterdep<ident,val>::Nodo *nodoAux;
+    nodoAux = buscar<ident,val>(ci.raiz, id); 
+    if (nodoAux != nullptr) {    //Nodo encontrado
+        nodoAux->v = v; 
+        return true;
+    } else return false;
 }
 
 /* Recupera toda la información asociada al elemento 'id'.
@@ -441,20 +416,14 @@ void desengancharMax(typename colecInterdep<ident,val>::Nodo *&nodoAux, typename
     }
 }
 
-/* FUNCION AUXILIAR ELIMINARNODO 
- * Realiza el borrado físico de un nodo en el ABB, reestructurando el árbol si es necesario.
- */
-template<typename ident,typename val>
-void eliminarNodo(colecInterdep<ident,val>& ci, typename colecInterdep<ident,val>::Nodo *&nodoAux, const ident &id) {
-    if (nodoAux == nullptr) return; 
 
-    if (nodoAux->id < id) { // Si actual < buscado, buscamos en derecha
-        eliminarNodo<ident,val>(ci, nodoAux->der, id);
-    } else if (id < nodoAux->id) { // Si buscado < actual, buscamos en izquierda
-        eliminarNodo<ident,val>(ci, nodoAux->izq, id);
-    } else {
-        // Nodo encontrado
-        if (nodoAux->NumDepend == 0) { 
+/* Elimina el elemento 'id' de la colección si existe y si no tiene dependientes (NumDepend == 0).
+*/
+template<typename ident,typename val>
+void borrar(const ident &id, colecInterdep<ident,val>& ci) {
+    typename colecInterdep<ident,val>::Nodo*& nodoAux = buscar<ident,val>(ci.raiz,id);
+
+    if (nodoAux != nullptr && nodoAux->NumDepend == 0) { 
             
             // Gestionar dependencias del supervisor 
             if (nodoAux->NodoDep != nullptr) {
@@ -480,14 +449,6 @@ void eliminarNodo(colecInterdep<ident,val>& ci, typename colecInterdep<ident,val
             delete borrar;
             ci.numElementos--;
         }
-    }
-}
-
-/* Elimina el elemento 'id' de la colección si no tiene dependientes (NumDepend == 0).
-*/
-template<typename ident,typename val>
-void borrar(const ident &id, colecInterdep<ident,val>& ci) {
-    eliminarNodo<ident,val>(ci, ci.raiz, id);
 }
 
 /*---------------------
